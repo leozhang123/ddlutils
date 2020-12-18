@@ -37,6 +37,7 @@ import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySql50Platform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
 import org.zl.ddlutils.platform.oracle.Oracle10Platform;
+import org.zl.ddlutils.platform.oracle.Oracle11Platform;
 import org.zl.ddlutils.platform.oracle.Oracle8Platform;
 import org.zl.ddlutils.platform.oracle.Oracle9Platform;
 import org.zl.ddlutils.platform.postgresql.PostgreSqlPlatform;
@@ -54,19 +55,19 @@ import org.zl.ddlutils.platform.sybase.SybasePlatform;
 public class PlatformFactory
 {
     /** The database name -> platform map. */
-    private static Map _platforms = null;
+    private static Map<String, Class<?>> _platforms = null;
 
     /**
      * Returns the platform map.
      * 
      * @return The platform list
      */
-    private static synchronized Map getPlatforms()
+    private static synchronized Map<String, Class<?>> getPlatforms()
     {
         if (_platforms == null)
         {
             // lazy initialization
-            _platforms = new HashMap();
+            _platforms = new HashMap<>();
             registerPlatforms();
         }
         return _platforms;
@@ -81,7 +82,7 @@ public class PlatformFactory
      */
     public static synchronized Platform createNewPlatformInstance(String databaseName) throws DdlUtilsException
     {
-        Class platformClass = (Class)getPlatforms().get(databaseName.toLowerCase());
+        Class<?> platformClass = getPlatforms().get(databaseName.toLowerCase());
 
         try
         {
@@ -173,7 +174,7 @@ public class PlatformFactory
      * @param platformName  The platform name
      * @param platformClass The platform class which must implement the {@link Platform} interface
      */
-    public static synchronized void registerPlatform(String platformName, Class platformClass)
+    public static synchronized void registerPlatform(String platformName, Class<?> platformClass)
     {
         addPlatform(getPlatforms(), platformName, platformClass);
     }
@@ -199,6 +200,7 @@ public class PlatformFactory
         addPlatform(_platforms, Oracle8Platform.DATABASENAME,     Oracle8Platform.class);
         addPlatform(_platforms, Oracle9Platform.DATABASENAME,     Oracle9Platform.class);
         addPlatform(_platforms, Oracle10Platform.DATABASENAME,    Oracle10Platform.class);
+        addPlatform(_platforms, Oracle11Platform.DATABASENAME,    Oracle11Platform.class);
         addPlatform(_platforms, PostgreSqlPlatform.DATABASENAME,  PostgreSqlPlatform.class);
         addPlatform(_platforms, SapDbPlatform.DATABASENAME,       SapDbPlatform.class);
         addPlatform(_platforms, SybasePlatform.DATABASENAME,      SybasePlatform.class);
@@ -212,7 +214,7 @@ public class PlatformFactory
      * @param platformName  The platform name
      * @param platformClass The platform class which must implement the {@link Platform} interface
      */
-    private static synchronized void addPlatform(Map platformMap, String platformName, Class platformClass)
+    private static synchronized void addPlatform(Map<String, Class<?>> platformMap, String platformName, Class<?> platformClass)
     {
         if (!Platform.class.isAssignableFrom(platformClass))
         {

@@ -23,6 +23,7 @@ public class Oracle11ModelReader extends Oracle10ModelReader {
 	/**
      * {@inheritDoc}
      */
+    @Override
     protected Column readColumn(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
     	// For more Information see https://docs.oracle.com/cd/B19306_01/java.102/b14188/datamap.htm
@@ -65,6 +66,9 @@ public class Oracle11ModelReader extends Oracle10ModelReader {
 					column.setTypeCode(Types.INTEGER);
 				}
 				break;
+			case 0:
+				// if 0 then cancel size define
+				column.setSize(null);
 			}
 			
 		}

@@ -50,7 +50,7 @@ import org.zl.ddlutils.platform.PlatformImplBase;
 public class Oracle8Platform extends PlatformImplBase
 {
     /** Database name of this platform. */
-    public static final String DATABASENAME              = "Oracle";
+    public static final String DATABASENAME              = "Oracle8";
     /** The standard Oracle jdbc driver. */
     public static final String JDBC_DRIVER               = "oracle.jdbc.driver.OracleDriver";
     /** The old Oracle jdbc driver. */

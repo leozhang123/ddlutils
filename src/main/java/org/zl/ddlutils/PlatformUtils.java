@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -38,6 +39,7 @@ import org.zl.ddlutils.platform.interbase.InterbasePlatform;
 import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
+import org.zl.ddlutils.platform.oracle.Oracle11Platform;
 import org.zl.ddlutils.platform.oracle.Oracle8Platform;
 import org.zl.ddlutils.platform.postgresql.PostgreSqlPlatform;
 import org.zl.ddlutils.platform.sapdb.SapDbPlatform;
@@ -125,9 +127,9 @@ public class PlatformUtils
     public static final String JDBC_SUBPROTOCOL_JTDS_SYBASE               = "jtds:sybase";
 
     /** Maps the sub-protocl part of a jdbc connection url to a OJB platform name. */
-    private HashMap jdbcSubProtocolToPlatform = new HashMap();
+    private HashMap<String, String> jdbcSubProtocolToPlatform = new HashMap<>();
     /** Maps the jdbc driver name to a OJB platform name. */
-    private HashMap jdbcDriverToPlatform      = new HashMap();
+    private HashMap<String, String> jdbcDriverToPlatform      = new HashMap<>();
 
     /**
      * Creates a new instance.
@@ -182,6 +184,7 @@ public class PlatformUtils
         jdbcSubProtocolToPlatform.put(PlatformUtils.JDBC_SUBPROTOCOL_INET_SYBASE_POOLED_1,      SybasePlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(PlatformUtils.JDBC_SUBPROTOCOL_INET_SYBASE_POOLED_2,      SybasePlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(PlatformUtils.JDBC_SUBPROTOCOL_JTDS_SYBASE,               SybasePlatform.DATABASENAME);
+        jdbcSubProtocolToPlatform.put(Oracle11Platform.JDBC_SUBPROTOCOL_THIN,                    Oracle11Platform.DATABASENAME);
 
         jdbcDriverToPlatform.put(AxionPlatform.JDBC_DRIVER,                       AxionPlatform.DATABASENAME);
         jdbcDriverToPlatform.put(Db2Platform.JDBC_DRIVER,                         Db2Platform.DATABASENAME);
@@ -213,6 +216,7 @@ public class PlatformUtils
         jdbcDriverToPlatform.put(SybasePlatform.JDBC_DRIVER_OLD,                  SybasePlatform.DATABASENAME);
         jdbcDriverToPlatform.put(PlatformUtils.JDBC_DRIVER_DATADIRECT_SYBASE,     SybasePlatform.DATABASENAME);
         jdbcDriverToPlatform.put(PlatformUtils.JDBC_DRIVER_INET_SYBASE,           SybasePlatform.DATABASENAME);
+        jdbcDriverToPlatform.put(Oracle11Platform.JDBC_DRIVER,                     Oracle11Platform.DATABASENAME);
     }
 
     /**
@@ -292,9 +296,9 @@ public class PlatformUtils
         {
             return null;
         }
-        for (Iterator it = jdbcSubProtocolToPlatform.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Entry<String, String>> it = jdbcSubProtocolToPlatform.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry          = (Map.Entry)it.next();
+            Map.Entry<String, String> entry   = it.next();
             String    curSubProtocol = "jdbc:" + (String)entry.getKey() + ":";
 
             if (jdbcConnectionUrl.startsWith(curSubProtocol))

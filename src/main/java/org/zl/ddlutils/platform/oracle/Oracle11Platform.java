@@ -24,7 +24,10 @@ package org.zl.ddlutils.platform.oracle;
 public class Oracle11Platform extends Oracle9Platform {
 
 	 /** Database name of this platform. */
-    public static final String DATABASENAME = "Oracle11";
+    public static final String DATABASENAME = "Oracle";
+    
+    /** The standard Oracle jdbc driver. */
+    public static final String JDBC_DRIVER = "oracle.jdbc.OracleDriver";
     
     /**
      * Creates a new platform instance.
