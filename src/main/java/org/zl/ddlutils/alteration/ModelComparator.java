@@ -132,7 +132,7 @@ public class ModelComparator
      * @param targetModel The target model
      * @return The changes
      */
-    public List compare(Database sourceModel, Database targetModel)
+    public List<ModelChange> compare(Database sourceModel, Database targetModel)
     {
         Database intermediateModel = _cloneHelper.clone(sourceModel);
 
@@ -150,11 +150,11 @@ public class ModelComparator
      * @param targetModel       The target model
      * @return The changes
      */
-    protected List compareModels(Database sourceModel,
+    protected List<ModelChange> compareModels(Database sourceModel,
                                  Database intermediateModel,
                                  Database targetModel)
     {
-        ArrayList changes = new ArrayList();
+        ArrayList<ModelChange> changes = new ArrayList<ModelChange>();
 
         changes.addAll(checkForRemovedForeignKeys(sourceModel, intermediateModel, targetModel));
         changes.addAll(checkForRemovedTables(sourceModel, intermediateModel, targetModel));
@@ -164,7 +164,7 @@ public class ModelComparator
             Table intermediateTable = intermediateModel.getTable(tableIdx);
             Table sourceTable       = sourceModel.findTable(intermediateTable.getName(), _caseSensitive);
             Table targetTable       = targetModel.findTable(intermediateTable.getName(), _caseSensitive);
-            List  tableChanges      = compareTables(sourceModel, sourceTable,
+            List<TableChange>  tableChanges      = compareTables(sourceModel, sourceTable,
                                                     intermediateModel, intermediateTable,
                                                     targetModel, targetTable);
 
@@ -185,11 +185,11 @@ public class ModelComparator
      * @param targetModel       The target model
      * @return The changes
      */
-    protected List checkForRemovedForeignKeys(Database sourceModel,
+    protected List<RemoveForeignKeyChange> checkForRemovedForeignKeys(Database sourceModel,
                                               Database intermediateModel,
                                               Database targetModel)
     {
-        List changes = new ArrayList();
+        List<RemoveForeignKeyChange> changes = new ArrayList<RemoveForeignKeyChange>();
 
         for (int tableIdx = 0; tableIdx < intermediateModel.getTableCount(); tableIdx++)
         {
@@ -229,11 +229,11 @@ public class ModelComparator
      * @param targetModel       The target model
      * @return The changes
      */
-    protected List checkForAddedForeignKeys(Database sourceModel,
+    protected List<AddForeignKeyChange> checkForAddedForeignKeys(Database sourceModel,
                                             Database intermediateModel,
                                             Database targetModel)
     {
-        List changes = new ArrayList();
+        List<AddForeignKeyChange> changes = new ArrayList<AddForeignKeyChange>();
 
         for (int tableIdx = 0; tableIdx < targetModel.getTableCount(); tableIdx++)
         {
@@ -273,11 +273,11 @@ public class ModelComparator
      * @param targetModel       The target model
      * @return The changes
      */
-    protected List checkForRemovedTables(Database sourceModel,
+    protected List<RemoveTableChange> checkForRemovedTables(Database sourceModel,
                                          Database intermediateModel,
                                          Database targetModel)
     {
-        List    changes            = new ArrayList();
+        List<RemoveTableChange>    changes            = new ArrayList<RemoveTableChange>();
         Table[] intermediateTables = intermediateModel.getTables();
 
         for (int tableIdx = 0; tableIdx < intermediateTables.length; tableIdx++)
@@ -310,11 +310,11 @@ public class ModelComparator
      * @param targetModel       The target model
      * @return The changes
      */
-    protected List checkForAddedTables(Database sourceModel,
+    protected List<AddTableChange> checkForAddedTables(Database sourceModel,
                                        Database intermediateModel,
                                        Database targetModel)
     {
-        List changes = new ArrayList();
+        List<AddTableChange> changes = new ArrayList<AddTableChange>();
 
         for (int tableIdx = 0; tableIdx < targetModel.getTableCount(); tableIdx++)
         {
@@ -353,18 +353,18 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List compareTables(Database sourceModel,
+    protected List<TableChange> compareTables(Database sourceModel,
                                  Table    sourceTable,
                                  Database intermediateModel,
                                  Table    intermediateTable,
                                  Database targetModel,
                                  Table    targetTable)
     {
-        ArrayList changes = new ArrayList();
+        ArrayList<TableChange> changes = new ArrayList<>();
 
         changes.addAll(checkForRemovedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable));
 
-        ArrayList tableDefinitionChanges = new ArrayList();
+        ArrayList<TableChange> tableDefinitionChanges = new ArrayList<TableChange>();
         Table     tmpTable               = _cloneHelper.clone(intermediateTable, true, false, intermediateModel, _caseSensitive);
 
         tableDefinitionChanges.addAll(checkForRemovedColumns(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable));
@@ -420,7 +420,7 @@ public class ModelComparator
 
                 RecreateTableChange tableChange =  new RecreateTableChange(intermediateTable.getName(),
                                                                            intermediateTable,
-                                                                           new ArrayList(tableDefinitionChanges));
+                                                                           new ArrayList<TableChange>(tableDefinitionChanges));
 
                 changes.add(tableChange);
                 tableChange.apply(intermediateModel, _caseSensitive);
@@ -462,14 +462,14 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForRemovedIndexes(Database sourceModel,
+    protected List<TableChange> checkForRemovedIndexes(Database sourceModel,
                                           Table    sourceTable,
                                           Database intermediateModel,
                                           Table    intermediateTable,
                                           Database targetModel,
                                           Table    targetTable)
     {
-        List    changes = new ArrayList();
+        List<TableChange>    changes = new ArrayList<>();
         Index[] indexes = intermediateTable.getIndices();
 
         for (int indexIdx = 0; indexIdx < indexes.length; indexIdx++)
@@ -505,14 +505,14 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForAddedIndexes(Database sourceModel,
+    protected List<TableChange> checkForAddedIndexes(Database sourceModel,
                                         Table    sourceTable,
                                         Database intermediateModel,
                                         Table    intermediateTable,
                                         Database targetModel,
                                         Table    targetTable)
     {
-        List changes = new ArrayList();
+        List<TableChange> changes = new ArrayList<TableChange>();
 
         for (int indexIdx = 0; indexIdx < targetTable.getIndexCount(); indexIdx++)
         {
@@ -549,15 +549,15 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForChangeOfColumnOrder(Database sourceModel,
+    protected List<TableChange> checkForChangeOfColumnOrder(Database sourceModel,
                                                Table    sourceTable,
                                                Database intermediateModel,
                                                Table    intermediateTable,
                                                Database targetModel,
                                                Table    targetTable)
     {
-        List changes       = new ArrayList();
-        List targetOrder   = new ArrayList();
+        List<TableChange> changes       = new ArrayList<>();
+        List<Column> targetOrder   = new ArrayList<>();
         int  numChangedPKs = 0;
 
         for (int columnIdx = 0; columnIdx < targetTable.getColumnCount(); columnIdx++)
@@ -571,7 +571,7 @@ public class ModelComparator
             }
         }
 
-        HashMap newPositions = new HashMap();
+        HashMap<String, Integer> newPositions = new HashMap<>();
 
         for (int columnIdx = 0; columnIdx < intermediateTable.getColumnCount(); columnIdx++)
         {
@@ -617,7 +617,7 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForRemovedColumns(Database sourceModel,
+    protected List<RemoveColumnChange> checkForRemovedColumns(Database sourceModel,
                                           Table    sourceTable,
                                           Database intermediateModel,
                                           Table    intermediateTable,
@@ -627,7 +627,7 @@ public class ModelComparator
         // if the platform does not support dropping pk columns, then the pk handling above will
         // generate appropriate pk changes
 
-        List     changes = new ArrayList();
+        List<RemoveColumnChange>     changes = new ArrayList<>();
         Column[] columns = intermediateTable.getColumns();
 
         for (int columnIdx = 0; columnIdx < columns.length; columnIdx++)
@@ -663,14 +663,14 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForAddedColumns(Database sourceModel,
+    protected List<AddColumnChange> checkForAddedColumns(Database sourceModel,
                                         Table    sourceTable,
                                         Database intermediateModel,
                                         Table    intermediateTable,
                                         Database targetModel,
                                         Table    targetTable)
     {
-        List changes = new ArrayList();
+        List<AddColumnChange> changes = new ArrayList<>();
 
         for (int columnIdx = 0; columnIdx < targetTable.getColumnCount(); columnIdx++)
         {
@@ -703,14 +703,14 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForChangedColumns(Database sourceModel,
+    protected List<ColumnDefinitionChange> checkForChangedColumns(Database sourceModel,
                                           Table    sourceTable,
                                           Database intermediateModel,
                                           Table    intermediateTable,
                                           Database targetModel,
                                           Table    targetTable)
     {
-        List changes = new ArrayList();
+        List<ColumnDefinitionChange> changes = new ArrayList<>();
 
         for (int columnIdx = 0; columnIdx < targetTable.getColumnCount(); columnIdx++)
         {
@@ -742,14 +742,14 @@ public class ModelComparator
      * @param targetTable       The target table
      * @return The changes
      */
-    protected List checkForPrimaryKeyChanges(Database sourceModel,
+    protected List<TableChange> checkForPrimaryKeyChanges(Database sourceModel,
                                              Table    sourceTable,
                                              Database intermediateModel,
                                              Table    intermediateTable,
                                              Database targetModel,
                                              Table    targetTable)
     {
-        List     changes  = new ArrayList();
+        List<TableChange>     changes  = new ArrayList<>();
         Column[] sourcePK = sourceTable.getPrimaryKeyColumns();
         Column[] curPK    = intermediateTable.getPrimaryKeyColumns();
         Column[] targetPK = targetTable.getPrimaryKeyColumns();

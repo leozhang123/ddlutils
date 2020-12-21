@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.zl.ddlutils.Platform;
 import org.zl.ddlutils.model.Column;
@@ -51,12 +52,13 @@ public class PostgreSqlModelReader extends JdbcModelReader
         setDefaultCatalogPattern(null);
         setDefaultSchemaPattern(null);
         setDefaultTablePattern(null);
+        setSearchStringPattern(Pattern.compile("[%]"));
     }
 
     /**
      * {@inheritDoc}
      */
-    protected Table readTable(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+    protected Table readTable(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
         Table table = super.readTable(metaData, values);
 
@@ -64,7 +66,7 @@ public class PostgreSqlModelReader extends JdbcModelReader
         {
             // PostgreSQL also returns unique indexes for pk and non-pk auto-increment columns
             // which are of the form "[table]_[column]_key"
-            HashMap uniquesByName = new HashMap();
+            HashMap<String, Index> uniquesByName = new HashMap<>();
     
             for (int indexIdx = 0; indexIdx < table.getIndexCount(); indexIdx++)
             {
@@ -97,7 +99,7 @@ public class PostgreSqlModelReader extends JdbcModelReader
     /**
      * {@inheritDoc}
      */
-    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
         Column column = super.readColumn(metaData, values);
 
@@ -151,18 +153,20 @@ public class PostgreSqlModelReader extends JdbcModelReader
                 // "'some value'::character varying" or "'2000-01-01'::date"
                 switch (column.getTypeCode())
                 {
-                    case Types.INTEGER:
-                    case Types.BIGINT:
-                    case Types.DECIMAL:
-                    case Types.NUMERIC:
-                        defaultValue = extractUndelimitedDefaultValue(defaultValue);
-                        break;
+                	case Types.INTEGER:
                     case Types.CHAR:
                     case Types.VARCHAR:
                     case Types.LONGVARCHAR:
                     case Types.DATE:
                     case Types.TIME:
                     case Types.TIMESTAMP:
+                    case Types.REAL:
+                    case Types.NUMERIC:
+                    case Types.BIGINT:
+                    case Types.DECIMAL:
+                    case Types.TINYINT:
+                    case Types.SMALLINT:
+                    case Types.DOUBLE:
                         defaultValue = extractDelimitedDefaultValue(defaultValue);
                         break;
                 }
@@ -199,26 +203,6 @@ public class PostgreSqlModelReader extends JdbcModelReader
         return defaultValue;
     }
     
-    /**
-     * Extractes the default value from a default value spec of the form
-     * "-9000000000000000000::bigint".
-     * 
-     * @param defaultValue The default value spec
-     * @return The default value
-     */
-    private String extractUndelimitedDefaultValue(String defaultValue)
-    {
-        int valueEnd = defaultValue.indexOf("::");
-
-        if (valueEnd > 0)
-        {
-            return defaultValue.substring(0, valueEnd);
-        }
-        else
-        {
-            return defaultValue;
-        }
-    }
     
     /**
      * {@inheritDoc}
@@ -237,5 +221,6 @@ public class PostgreSqlModelReader extends JdbcModelReader
         // PostgreSql uses the form "[tablename]_pkey"
         return (table.getName() + "_pkey").equals(index.getName());
     }
+
 
 }

@@ -11,6 +11,7 @@ import org.zl.ddlutils.platform.interbase.InterbasePlatform;
 import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
+import org.zl.ddlutils.platform.oracle.Oracle11Platform;
 import org.zl.ddlutils.platform.oracle.Oracle8Platform;
 import org.zl.ddlutils.platform.postgresql.PostgreSqlPlatform;
 import org.zl.ddlutils.platform.sapdb.SapDbPlatform;
@@ -335,7 +336,7 @@ public class TestPlatformUtils extends TestCase
      */
     public void testOracleUrl()
     {
-        assertEquals(Oracle8Platform.DATABASENAME,
+        assertEquals(Oracle11Platform.DATABASENAME,
                      _platformUtils.determineDatabaseType(null, "jdbc:oracle:thin:@myhost:1521:orcl"));
         assertEquals(Oracle8Platform.DATABASENAME,
                      _platformUtils.determineDatabaseType(null, "jdbc:oracle:oci8:@(description=(address=(host=myhost)(protocol=tcp)(port=1521))(connect_data=(sid=orcl)))"));

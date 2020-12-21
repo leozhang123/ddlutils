@@ -30,10 +30,15 @@ import org.zl.ddlutils.util.StringUtilsExt;
  */
 public abstract class IndexImplBase implements Index
 {
-    /** The name of the index. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7493220780927225095L;
+	
+	/** The name of the index. */
     protected String    _name;
     /** The columns making up the index. */
-    protected ArrayList _columns = new ArrayList();
+    protected ArrayList<IndexColumn> _columns = new ArrayList<>();
 
     /**
      * {@inheritDoc}

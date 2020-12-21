@@ -37,7 +37,7 @@ import org.zl.ddlutils.model.Table;
 public class DynaClassCache
 {
     /** A cache of the SqlDynaClasses per table name. */
-    private Map _dynaClassCache = new HashMap();
+    private Map<String, SqlDynaClass> _dynaClassCache = new HashMap<>();
 
     /**
      * Creates a new dyna bean instance for the given table.

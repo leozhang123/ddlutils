@@ -35,7 +35,7 @@ public abstract class IndexChangeImplBase extends    TableChangeImplBase
                                           implements IndexChange
 {
     /** The names of the columns in the index. */
-    private List _columnNames = new ArrayList();
+    private List<String> _columnNames = new ArrayList<>();
 
     /**
      * Creates a new change object.

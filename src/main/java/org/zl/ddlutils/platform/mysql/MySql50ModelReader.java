@@ -46,10 +46,10 @@ public class MySql50ModelReader extends MySqlModelReader
     /**
      * {@inheritDoc}
      */
-    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
         Column column = super.readColumn(metaData, values);
-
+  
         // make sure the defaultvalue is null when an empty is returned.
         if ("".equals(column.getDefaultValue()))
         {

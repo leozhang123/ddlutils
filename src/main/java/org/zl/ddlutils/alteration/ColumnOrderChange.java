@@ -22,6 +22,7 @@ package org.zl.ddlutils.alteration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.zl.ddlutils.model.Column;
 import org.zl.ddlutils.model.Database;
@@ -35,7 +36,7 @@ import org.zl.ddlutils.model.Table;
 public class ColumnOrderChange extends TableChangeImplBase
 {
     /** The map containing the new positions keyed by the source columns. */
-    private Map _newPositions;
+    private Map<String, Integer> _newPositions;
 
     /**
      * Creates a new change object.
@@ -43,7 +44,7 @@ public class ColumnOrderChange extends TableChangeImplBase
      * @param tableName    The name of the table whose primary key is to be changed
      * @param newPositions The map containing the new positions keyed by the source column names
      */
-    public ColumnOrderChange(String tableName, Map newPositions)
+    public ColumnOrderChange(String tableName, Map<String, Integer> newPositions)
     {
         super(tableName);
         _newPositions = newPositions;
@@ -66,13 +67,13 @@ public class ColumnOrderChange extends TableChangeImplBase
         }
         else
         {
-            for (Iterator it = _newPositions.entrySet().iterator(); it.hasNext();)
+            for (Iterator<Entry<String, Integer>> it = _newPositions.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry entry = (Map.Entry)it.next();
+                Map.Entry<String, Integer> entry = it.next();
 
-                if (sourceColumnName.equalsIgnoreCase((String)entry.getKey()))
+                if (sourceColumnName.equalsIgnoreCase(entry.getKey()))
                 {
-                    newPos = (Integer)entry.getValue();
+                    newPos = entry.getValue();
                     break;
                 }
             }
@@ -87,7 +88,7 @@ public class ColumnOrderChange extends TableChangeImplBase
     public void apply(Database database, boolean caseSensitive)
     {
         Table     table      = findChangedTable(database, caseSensitive);
-        ArrayList newColumns = new ArrayList();
+        ArrayList<Column> newColumns = new ArrayList<>();
 
         for (int idx = 0; idx < table.getColumnCount(); idx++)
         {

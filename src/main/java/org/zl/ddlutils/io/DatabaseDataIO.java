@@ -48,7 +48,7 @@ import org.zl.ddlutils.model.Table;
 public class DatabaseDataIO
 {
     /** The converters to use for converting between data and its XML representation. */
-    private ArrayList _converters = new ArrayList();
+    private ArrayList<DataConverterRegistration> _converters = new ArrayList<>();
     /** Whether we should continue when an error was detected. */
     private boolean _failOnError = true;
     /** Whether foreign key order shall be followed when inserting data into the database. */
@@ -189,9 +189,9 @@ public class DatabaseDataIO
      */
     private void registerConverters(ConverterConfiguration converterConf) throws DdlUtilsException
     {
-        for (Iterator it = _converters.iterator(); it.hasNext();)
+        for (Iterator<DataConverterRegistration> it = _converters.iterator(); it.hasNext();)
         {
-            DataConverterRegistration registrationInfo = (DataConverterRegistration)it.next();
+            DataConverterRegistration registrationInfo = it.next();
 
             if (registrationInfo.getTypeCode() != Integer.MIN_VALUE)
             {
@@ -218,6 +218,7 @@ public class DatabaseDataIO
      * @param path        The path to the output XML data file
      * @param xmlEncoding The encoding to use for writing the XML
      * @return The writer
+     * @throws DdlUtilsException 
      */
     public DataWriter getConfiguredDataWriter(String path, String xmlEncoding) throws DdlUtilsException
     {
@@ -241,6 +242,7 @@ public class DatabaseDataIO
      * @param output      The output stream
      * @param xmlEncoding The encoding to use for writing the XML
      * @return The writer
+     * @throws DdlUtilsException 
      */
     public DataWriter getConfiguredDataWriter(OutputStream output, String xmlEncoding) throws DdlUtilsException
     {
@@ -257,6 +259,7 @@ public class DatabaseDataIO
      * @param output      The output writer; needs to be configured with the specified encoding
      * @param xmlEncoding The encoding to use for writing the XML
      * @return The writer
+     * @throws DdlUtilsException 
      */
     public DataWriter getConfiguredDataWriter(Writer output, String xmlEncoding) throws DdlUtilsException
     {
@@ -273,6 +276,7 @@ public class DatabaseDataIO
      * @param platform    The platform; needs to be connected to a live database
      * @param path        The path of the output file
      * @param xmlEncoding The encoding to use for the XML
+     * @throws DdlUtilsException 
      */
     public void writeDataToXML(Platform platform, String path, String xmlEncoding) throws DdlUtilsException
     {
@@ -373,10 +377,10 @@ public class DatabaseDataIO
 
         // TODO: An advanced algorithm could be employed here that writes individual
         //       objects related by foreign keys, in the correct order
-        List tables = sortTables(model.getTables());
+        List<Table> tables = sortTables(model.getTables());
 
         writer.writeDocumentStart();
-        for (Iterator it = tables.iterator(); it.hasNext();)
+        for (Iterator<Table> it = tables.iterator(); it.hasNext();)
         {
             writeDataForTableToXML(platform, model, (Table)it.next(), writer);
         }
@@ -389,10 +393,10 @@ public class DatabaseDataIO
      * @param tables The tables
      * @return The sorted tables
      */
-    private List sortTables(Table[] tables)
+    private List<Table> sortTables(Table[] tables)
     {
-        ArrayList      result    = new ArrayList();
-        HashSet        processed = new HashSet();
+        ArrayList<Table>      result    = new ArrayList<>();
+        HashSet<Table>        processed = new HashSet<Table>();
         ListOrderedMap pending   = new ListOrderedMap();
 
         for (int idx = 0; idx < tables.length; idx++)
@@ -406,7 +410,7 @@ public class DatabaseDataIO
             }
             else
             {
-                HashSet waitedFor = new HashSet();
+                HashSet<Table> waitedFor = new HashSet<>();
 
                 for (int fkIdx = 0; fkIdx < table.getForeignKeyCount(); fkIdx++)
                 {
@@ -421,16 +425,19 @@ public class DatabaseDataIO
             }
         }
 
-        HashSet newProcessed = new HashSet();
+        HashSet<Table> newProcessed = new HashSet<>();
 
         while (!processed.isEmpty() && !pending.isEmpty())
         {
             newProcessed.clear();
-            for (Iterator it = pending.entrySet().iterator(); it.hasNext();)
+            for (@SuppressWarnings("rawtypes")
+			Iterator it = pending.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry entry     = (Map.Entry)it.next();
+                @SuppressWarnings("rawtypes")
+				Map.Entry entry     = (Map.Entry)it.next();
                 Table     table     = (Table)entry.getKey();
-                HashSet   waitedFor = (HashSet)entry.getValue();
+                @SuppressWarnings("unchecked")
+				HashSet<Table>   waitedFor = (HashSet<Table>)entry.getValue();
 
                 waitedFor.removeAll(processed);
                 if (waitedFor.isEmpty())
@@ -442,13 +449,14 @@ public class DatabaseDataIO
             }
             processed.clear();
 
-            HashSet tmp = processed;
+            HashSet<Table> tmp = processed;
 
             processed    = newProcessed;
             newProcessed = tmp;
         }
         // the remaining are within circular dependencies
-        for (Iterator it = pending.keySet().iterator(); it.hasNext();)
+        for (@SuppressWarnings("unchecked")
+		Iterator<Table> it = pending.keySet().iterator(); it.hasNext();)
         {
             result.add(it.next());
         }
@@ -545,6 +553,7 @@ public class DatabaseDataIO
      * @param platform The database
      * @param model    The model
      * @return The data reader
+     * @throws DdlUtilsException 
      */
     public DataReader getConfiguredDataReader(Platform platform, Database model) throws DdlUtilsException
     {
@@ -571,6 +580,7 @@ public class DatabaseDataIO
      * 
      * @param platform The platform, must be connected to a live database
      * @param files    The XML data files
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, String[] files) throws DdlUtilsException
     {
@@ -583,6 +593,7 @@ public class DatabaseDataIO
      * 
      * @param platform The platform, must be connected to a live database
      * @param inputs   The input streams for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, InputStream[] inputs) throws DdlUtilsException
     {
@@ -595,6 +606,7 @@ public class DatabaseDataIO
      * 
      * @param platform The platform, must be connected to a live database
      * @param inputs   The input readers for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, Reader[] inputs) throws DdlUtilsException
     {
@@ -608,6 +620,7 @@ public class DatabaseDataIO
      * @param platform The platform, must be connected to a live database
      * @param model    The model to which to constrain the written data
      * @param files    The XML data files
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, Database model, String[] files) throws DdlUtilsException
     {
@@ -628,6 +641,7 @@ public class DatabaseDataIO
      * @param platform The platform, must be connected to a live database
      * @param model    The model to which to constrain the written data
      * @param inputs   The input streams for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, Database model, InputStream[] inputs) throws DdlUtilsException
     {
@@ -648,6 +662,7 @@ public class DatabaseDataIO
      * @param platform The platform, must be connected to a live database
      * @param model    The model to which to constrain the written data
      * @param inputs   The input readers for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(Platform platform, Database model, Reader[] inputs) throws DdlUtilsException
     {
@@ -668,6 +683,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param files      The XML data files
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, String[] files) throws DdlUtilsException
     {
@@ -685,6 +701,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param inputs     The input streams for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, InputStream[] inputs) throws DdlUtilsException
     {
@@ -702,6 +719,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param inputs     The input readers for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, Reader[] inputs) throws DdlUtilsException
     {
@@ -718,6 +736,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param path       The path to the XML data file
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, String path) throws DdlUtilsException
     {
@@ -739,6 +758,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param input      The input stream for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, InputStream input) throws DdlUtilsException
     {
@@ -760,6 +780,7 @@ public class DatabaseDataIO
      * 
      * @param dataReader The data reader
      * @param input      The input reader for the XML data
+     * @throws DdlUtilsException 
      */
     public void writeDataToDatabase(DataReader dataReader, Reader input) throws DdlUtilsException
     {

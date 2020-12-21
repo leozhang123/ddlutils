@@ -53,7 +53,7 @@ public class SqlDynaClass extends BasicDynaClass
      */
     public static SqlDynaClass newInstance(Table table)
     {
-        List properties = new ArrayList();
+        List<SqlDynaProperty> properties = new ArrayList<>();
 
         for (int idx = 0; idx < table.getColumnCount(); idx++)
         {
@@ -159,8 +159,8 @@ public class SqlDynaClass extends BasicDynaClass
      */
     protected void initPrimaryKeys()
     {
-        List           pkProps    = new ArrayList();
-        List           nonPkProps = new ArrayList();
+        List<SqlDynaProperty>           pkProps    = new ArrayList<>();
+        List<SqlDynaProperty>           nonPkProps = new ArrayList<>();
         DynaProperty[] properties = getDynaProperties();
 
         for (int idx = 0; idx < properties.length; idx++)

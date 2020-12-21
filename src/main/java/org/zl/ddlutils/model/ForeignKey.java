@@ -415,7 +415,8 @@ public class ForeignKey implements Serializable
      * @param otherFk The other foreign key
      * @return <code>true</code> if this foreign key is equal (ignoring case) to the given one
      */
-    public boolean equalsIgnoreCase(ForeignKey otherFk)
+    @SuppressWarnings("unchecked")
+	public boolean equalsIgnoreCase(ForeignKey otherFk)
     {
         boolean checkName = (_name != null) && (_name.length() > 0) &&
                             (otherFk._name != null) && (otherFk._name.length() > 0);
@@ -423,17 +424,17 @@ public class ForeignKey implements Serializable
         if ((!checkName || _name.equalsIgnoreCase(otherFk._name)) &&
             _foreignTableName.equalsIgnoreCase(otherFk._foreignTableName))
         {
-            HashSet otherRefs = new HashSet();
+            HashSet<Reference> otherRefs = new HashSet<>();
 
             otherRefs.addAll(otherFk._references);
-            for (Iterator it = _references.iterator(); it.hasNext();)
+            for (Iterator<Reference> it = _references.iterator(); it.hasNext();)
             {
-                Reference curLocalRef = (Reference)it.next();
+                Reference curLocalRef = it.next();
                 boolean   found       = false;
 
-                for (Iterator otherIt = otherRefs.iterator(); otherIt.hasNext();)
+                for (Iterator<Reference> otherIt = otherRefs.iterator(); otherIt.hasNext();)
                 {
-                    Reference curOtherRef = (Reference)otherIt.next();
+                    Reference curOtherRef = otherIt.next();
 
                     if (curLocalRef.equalsIgnoreCase(curOtherRef))
                     {

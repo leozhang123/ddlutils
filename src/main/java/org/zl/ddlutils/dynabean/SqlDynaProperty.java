@@ -55,7 +55,7 @@ public class SqlDynaProperty extends DynaProperty
      * @param column The column
      * @param type   The type of the property
      */
-    public SqlDynaProperty(Column column, Class type)
+    public SqlDynaProperty(Column column, Class<?> type)
     {
         super(column.getName(), type);
         _column = column;

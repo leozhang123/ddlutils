@@ -36,7 +36,7 @@ public abstract class ForeignKeyChangeImplBase extends    TableChangeImplBase
                                                implements ForeignKeyChange
 {
     /** List of pairs of local and corresponding foreign column names that make up the foreign key. */
-    private List _referenceColumnNames = new ArrayList();
+    private List<Pair> _referenceColumnNames = new ArrayList<>();
 
     /**
      * Creates a new change object.

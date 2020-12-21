@@ -28,6 +28,7 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
@@ -87,7 +88,8 @@ public abstract class SqlBuilder
     /** Helper object for dealing with default values. */
     private DefaultValueHelper _defaultValueHelper = new DefaultValueHelper();
     /** The character sequences that need escaping. */
-    private Map _charSequencesToEscape = new ListOrderedMap();
+    @SuppressWarnings("unchecked")
+	private Map<String, String> _charSequencesToEscape = new ListOrderedMap();
 
     //
     // Configuration
@@ -375,6 +377,7 @@ public abstract class SqlBuilder
      * Outputs the DDL required to drop and (re)create all tables in the database model.
      * 
      * @param database The database model 
+     * @throws IOException 
      */
     public void createTables(Database database) throws IOException
     {
@@ -386,6 +389,7 @@ public abstract class SqlBuilder
      * 
      * @param database   The database
      * @param dropTables Whether to drop tables before creating them
+     * @throws IOException 
      */
     public void createTables(Database database, boolean dropTables) throws IOException
     {
@@ -398,6 +402,7 @@ public abstract class SqlBuilder
      * @param database   The database
      * @param params     The parameters used in the creation
      * @param dropTables Whether to drop tables before creating them
+     * @throws IOException 
      */
     public void createTables(Database database, CreationParameters params, boolean dropTables) throws IOException
     {
@@ -428,7 +433,7 @@ public abstract class SqlBuilder
      * @param table      The table
      * @param parameters Additional platform-specific parameters for the table creation
      */
-    protected void createTemporaryTable(Database database, Table table, Map parameters) throws IOException 
+    protected void createTemporaryTable(Database database, Table table, Map<String, String> parameters) throws IOException 
     {
         createTable(database, table, parameters);
     }
@@ -474,7 +479,8 @@ public abstract class SqlBuilder
         print("INSERT INTO ");
         printIdentifier(getTableName(targetTable));
         print(" (");
-        for (Iterator columnIt = columns.keySet().iterator(); columnIt.hasNext();)
+        for (@SuppressWarnings("unchecked")
+		Iterator<Column> columnIt = columns.keySet().iterator(); columnIt.hasNext();)
         {
             printIdentifier(getColumnName((Column)columnIt.next()));
             if (columnIt.hasNext())
@@ -483,9 +489,10 @@ public abstract class SqlBuilder
             }
         }
         print(") SELECT ");
-        for (Iterator columnsIt = columns.entrySet().iterator(); columnsIt.hasNext();)
+        for (@SuppressWarnings("unchecked")
+		Iterator<Entry<Column, Column>> columnsIt = columns.entrySet().iterator(); columnsIt.hasNext();)
         {
-            Map.Entry entry = (Map.Entry)columnsIt.next();
+            Map.Entry<Column, Column> entry = columnsIt.next();
 
             writeCastExpression((Column)entry.getKey(),
                                 (Column)entry.getValue());
@@ -532,6 +539,7 @@ public abstract class SqlBuilder
      * 
      * @param database The database model
      * @param table    The table
+     * @throws IOException 
      */
     public void createTable(Database database, Table table) throws IOException 
     {
@@ -545,8 +553,9 @@ public abstract class SqlBuilder
      * @param database   The database model
      * @param table      The table
      * @param parameters Additional platform-specific parameters for the table creation
+     * @throws IOException 
      */
-    public void createTable(Database database, Table table, Map parameters) throws IOException 
+    public void createTable(Database database, Table table, Map<String, String> parameters) throws IOException 
     {
         writeTableCreationStmt(database, table, parameters);
         writeTableCreationStmtEnding(table, parameters);
@@ -566,6 +575,7 @@ public abstract class SqlBuilder
      * 
      * @param table             The table
      * @param primaryKeyColumns The primary key columns 
+     * @throws IOException 
      */
     public void createPrimaryKey(Table table, Column[] primaryKeyColumns) throws IOException
     {
@@ -586,6 +596,7 @@ public abstract class SqlBuilder
      * Writes the indexes for the given table using external index creation statements.
      * 
      * @param table The table
+     * @throws IOException 
      */
     public void createIndexes(Table table) throws IOException
     {
@@ -606,6 +617,7 @@ public abstract class SqlBuilder
      * 
      * @param table The table
      * @param index The index
+     * @throws IOException 
      */
     public void createIndex(Table table, Index index) throws IOException
     {
@@ -656,6 +668,7 @@ public abstract class SqlBuilder
      * Creates the external foreignkey creation statements for all tables in the database.
      * 
      * @param database The database
+     * @throws IOException 
      */
     public void createForeignKeys(Database database) throws IOException
     {
@@ -670,6 +683,7 @@ public abstract class SqlBuilder
      * 
      * @param database The database model
      * @param table    The table
+     * @throws IOException 
      */
     public void createForeignKeys(Database database, Table table) throws IOException
     {
@@ -685,6 +699,7 @@ public abstract class SqlBuilder
      * @param database   The database model
      * @param table      The table 
      * @param foreignKey The foreign key
+     * @throws IOException 
      */
     public void createForeignKey(Database database, Table table, ForeignKey foreignKey) throws IOException
     {
@@ -721,6 +736,7 @@ public abstract class SqlBuilder
      * @param model     The database model
      * @param table     The table
      * @param newColumn The new column
+     * @throws IOException 
      */
     public void addColumn(Database model, Table table, Column newColumn) throws IOException
     {
@@ -736,6 +752,7 @@ public abstract class SqlBuilder
      * Outputs the DDL required to drop the database.
      * 
      * @param database The database 
+     * @throws IOException 
      */
     public void dropTables(Database database) throws IOException
     {
@@ -774,6 +791,7 @@ public abstract class SqlBuilder
      * 
      * @param database The database
      * @param table    The table
+     * @throws IOException 
      */
     public void dropTable(Database database, Table table) throws IOException
     {
@@ -804,6 +822,7 @@ public abstract class SqlBuilder
      * if you want that.
      * 
      * @param table The table to drop
+     * @throws IOException 
      */
     public void dropTable(Table table) throws IOException
     {
@@ -816,6 +835,7 @@ public abstract class SqlBuilder
      * Creates external foreignkey drop statements.
      * 
      * @param table The table
+     * @throws IOException 
      */
     public void dropForeignKeys(Table table) throws IOException
     {
@@ -831,6 +851,7 @@ public abstract class SqlBuilder
      *
      * @param table      The table 
      * @param foreignKey The foreign key
+     * @throws IOException 
      */
     public void dropForeignKey(Table table, ForeignKey foreignKey) throws IOException
     {
@@ -851,7 +872,7 @@ public abstract class SqlBuilder
      *                        prepared statement
      * @return The insertion sql
      */
-    public String getInsertSql(Table table, Map columnValues, boolean genPlaceholders)
+    public String getInsertSql(Table table, Map<String, Object> columnValues, boolean genPlaceholders)
     {
         StringBuffer buffer   = new StringBuffer("INSERT INTO ");
         boolean      addComma = false;
@@ -922,7 +943,7 @@ public abstract class SqlBuilder
      *                        prepared statement (both for the pk values and the object values)
      * @return The update sql
      */
-    public String getUpdateSql(Table table, Map columnValues, boolean genPlaceholders)
+    public String getUpdateSql(Table table, Map<String, Object> columnValues, boolean genPlaceholders)
     {
         StringBuffer buffer = new StringBuffer("UPDATE ");
         boolean      addSep = false;
@@ -993,7 +1014,7 @@ public abstract class SqlBuilder
      *                        prepared statement (both for the pk values and the object values)
      * @return The update sql
      */
-    public String getUpdateSql(Table table, Map oldColumnValues, Map newColumnValues, boolean genPlaceholders)
+    public String getUpdateSql(Table table, Map<String, Object> oldColumnValues, Map<String, Object> newColumnValues, boolean genPlaceholders)
     {
         StringBuffer buffer = new StringBuffer("UPDATE ");
         boolean      addSep = false;
@@ -1066,7 +1087,7 @@ public abstract class SqlBuilder
      *                        prepared statement
      * @return The delete sql
      */
-    public String getDeleteSql(Table table, Map pkValues, boolean genPlaceholders)
+    public String getDeleteSql(Table table, Map<String, Object> pkValues, boolean genPlaceholders)
     {
         StringBuffer buffer = new StringBuffer("DELETE FROM ");
         boolean      addSep = false;
@@ -1283,7 +1304,7 @@ public abstract class SqlBuilder
      * @param table      The table
      * @param parameters Additional platform-specific parameters for the table creation
      */
-    protected void writeTableCreationStmt(Database database, Table table, Map parameters) throws IOException
+    protected void writeTableCreationStmt(Database database, Table table, Map<String, String> parameters) throws IOException
     {
         print("CREATE TABLE ");
         printlnIdentifier(getTableName(table));
@@ -1315,7 +1336,7 @@ public abstract class SqlBuilder
      * @param table      The table
      * @param parameters Additional platform-specific parameters for the table creation
      */
-    protected void writeTableCreationStmtEnding(Table table, Map parameters) throws IOException
+    protected void writeTableCreationStmtEnding(Table table, Map<String, String> parameters) throws IOException
     {
         printEndOfStatement();
     }
@@ -1505,9 +1526,9 @@ public abstract class SqlBuilder
     {
         String result = value;
 
-        for (Iterator it = _charSequencesToEscape.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Entry<String, String>> it = _charSequencesToEscape.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry)it.next();
+            Map.Entry<String, String> entry = it.next();
 
             result = StringUtils.replace(result, (String)entry.getKey(), (String)entry.getValue());
         }
@@ -1860,6 +1881,7 @@ public abstract class SqlBuilder
      *
      * @param table The table the index is on
      * @param index The index to drop
+     * @throws IOException 
      */
     public void dropIndex(Table table, Index index) throws IOException
     {

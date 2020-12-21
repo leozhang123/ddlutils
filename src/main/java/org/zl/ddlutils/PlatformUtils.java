@@ -216,7 +216,8 @@ public class PlatformUtils
         jdbcDriverToPlatform.put(SybasePlatform.JDBC_DRIVER_OLD,                  SybasePlatform.DATABASENAME);
         jdbcDriverToPlatform.put(PlatformUtils.JDBC_DRIVER_DATADIRECT_SYBASE,     SybasePlatform.DATABASENAME);
         jdbcDriverToPlatform.put(PlatformUtils.JDBC_DRIVER_INET_SYBASE,           SybasePlatform.DATABASENAME);
-        jdbcDriverToPlatform.put(Oracle11Platform.JDBC_DRIVER,                     Oracle11Platform.DATABASENAME);
+        jdbcDriverToPlatform.put(Oracle11Platform.JDBC_DRIVER,                    Oracle11Platform.DATABASENAME);
+        jdbcDriverToPlatform.put(Oracle11Platform.JDBC_DRIVER_NAME,               Oracle11Platform.DATABASENAME);
     }
 
     /**

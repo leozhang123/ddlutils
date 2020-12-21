@@ -42,7 +42,7 @@ public class NumberConverter implements SqlTypeConverter
         }
         else
         {
-            Class targetClass = null;
+            Class<?> targetClass = null;
 
             switch (sqlTypeCode)
             {

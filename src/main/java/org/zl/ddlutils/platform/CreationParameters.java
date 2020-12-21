@@ -35,7 +35,7 @@ import org.zl.ddlutils.model.Table;
 public class CreationParameters
 {
     /** The parameter maps keyed by the tables. */
-    private Map _parametersPerTable = new HashMap();
+    private Map<String, Map<String, String>> _parametersPerTable = new HashMap<>();
 
     /**
      * Returns the parameters for the given table.
@@ -43,11 +43,12 @@ public class CreationParameters
      * @param table The table
      * @return The parameters
      */
-    public Map getParametersFor(Table table)
+    @SuppressWarnings("unchecked")
+	public Map<String, String> getParametersFor(Table table)
     {
         ListOrderedMap result       = new ListOrderedMap();
-        Map            globalParams = (Map)_parametersPerTable.get(null);
-        Map            tableParams  = (Map)_parametersPerTable.get(table.getName());
+        Map<String, String>            globalParams = _parametersPerTable.get(null);
+        Map<String, String>            tableParams  = _parametersPerTable.get(table.getName());
 
         if (globalParams != null)
         {
@@ -67,10 +68,11 @@ public class CreationParameters
      * @param paramName  The name of the parameter
      * @param paramValue The value of the parameter
      */
-    public void addParameter(Table table, String paramName, String paramValue)
+    @SuppressWarnings("unchecked")
+	public void addParameter(Table table, String paramName, String paramValue)
     {
         String key    = (table == null ? null : table.getName());
-        Map    params = (Map)_parametersPerTable.get(key);
+        Map<String, String>    params = _parametersPerTable.get(key);
 
         if (params == null)
         {
@@ -80,4 +82,5 @@ public class CreationParameters
         }
         params.put(paramName, paramValue);
     }
+
 }

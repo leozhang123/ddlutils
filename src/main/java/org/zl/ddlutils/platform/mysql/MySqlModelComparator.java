@@ -31,6 +31,7 @@ import org.zl.ddlutils.alteration.ColumnDefinitionChange;
 import org.zl.ddlutils.alteration.ModelComparator;
 import org.zl.ddlutils.alteration.RemoveForeignKeyChange;
 import org.zl.ddlutils.alteration.RemoveIndexChange;
+import org.zl.ddlutils.alteration.TableChange;
 import org.zl.ddlutils.alteration.TableDefinitionChangesPredicate;
 import org.zl.ddlutils.model.Column;
 import org.zl.ddlutils.model.Database;
@@ -65,7 +66,7 @@ public class MySqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForRemovedIndexes(Database sourceModel,
+    protected List<TableChange> checkForRemovedIndexes(Database sourceModel,
                                           Table    sourceTable,
                                           Database intermediateModel,
                                           Table    intermediateTable,
@@ -74,10 +75,10 @@ public class MySqlModelComparator extends ModelComparator
     {
         // Handling for http://bugs.mysql.com/bug.php?id=21395: we need to drop and then recreate FKs that reference columns
         // included in indexes that will be dropped
-        List changes     = super.checkForRemovedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
-        Set  columnNames = new HashSet();
+        List<TableChange> changes     = super.checkForRemovedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
+        Set<String>  columnNames = new HashSet<>();
 
-        for (Iterator it = changes.iterator(); it.hasNext();)
+        for (Iterator<TableChange> it = changes.iterator(); it.hasNext();)
         {
             RemoveIndexChange change = (RemoveIndexChange)it.next();
             Index             index  = change.findChangedIndex(sourceModel, isCaseSensitive());
@@ -98,17 +99,17 @@ public class MySqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List compareTables(Database sourceModel,
+    protected List<TableChange> compareTables(Database sourceModel,
                                  Table    sourceTable,
                                  Database intermediateModel,
                                  Table    intermediateTable,
                                  Database targetModel, Table targetTable)
     {
         // we need to drop and recreate foreign keys that reference columns whose data type will be changed (but not size)
-        List changes     = super.compareTables(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
-        Set  columnNames = new HashSet();
+        List<TableChange> changes     = super.compareTables(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
+        Set<String>  columnNames = new HashSet<>();
 
-        for (Iterator it = changes.iterator(); it.hasNext();)
+        for (Iterator<TableChange> it = changes.iterator(); it.hasNext();)
         {
             Object change = it.next();
 
@@ -140,9 +141,9 @@ public class MySqlModelComparator extends ModelComparator
      * @param columnNames       The names of the columns to look for
      * @return The additional changes
      */
-    private List getForeignKeyRecreationChanges(Table intermediateTable, Table targetTable, Set columnNames)
+    private List<TableChange> getForeignKeyRecreationChanges(Table intermediateTable, Table targetTable, Set<String> columnNames)
     {
-        List newChanges = new ArrayList();
+        List<TableChange> newChanges = new ArrayList<>();
 
         for (int fkIdx = 0; fkIdx < targetTable.getForeignKeyCount(); fkIdx++)
         {
@@ -155,7 +156,7 @@ public class MySqlModelComparator extends ModelComparator
                 {
                     Reference ref = intermediateFk.getReference(refIdx);
 
-                    for (Iterator colNameIt = columnNames.iterator(); colNameIt.hasNext();)
+                    for (Iterator<String> colNameIt = columnNames.iterator(); colNameIt.hasNext();)
                     {
                         if (StringUtilsExt.equals(ref.getLocalColumnName(), (String)colNameIt.next(), isCaseSensitive()))
                         {

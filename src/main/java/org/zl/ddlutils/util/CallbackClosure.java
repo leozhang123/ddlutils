@@ -42,13 +42,13 @@ public class CallbackClosure implements Closure
     /** The object on which the callbacks will be invoked. */
     private Object _callee;
     /** The parameter types. */
-    private Class[] _parameterTypes;
+    private Class<?>[] _parameterTypes;
     /** The parameters. */
     private Object[] _parameters;
     /** The position of the callback parameter type. */
     private int _callbackTypePos = -1;
     /** The cached callbacks. */
-    private Map _callbacks = new HashMap();
+    private Map<Class<?>, Method> _callbacks = new HashMap<>();
 
     /**
      * Creates a new closure object.
@@ -63,7 +63,7 @@ public class CallbackClosure implements Closure
      *                       will be ignored. Can be <code>null</code> if no parameter types
      *                       where given
      */
-    public CallbackClosure(Object callee, String callbackName, Class[] parameterTypes, Object[] parameters)
+    public CallbackClosure(Object callee, String callbackName, Class<?>[] parameterTypes, Object[] parameters)
     {
         _callee = callee;
 
@@ -100,7 +100,7 @@ public class CallbackClosure implements Closure
             }
         }
         
-        Class type = callee.getClass();
+        Class<?> type = callee.getClass();
 
         // we're caching the callbacks
         do
@@ -112,7 +112,7 @@ public class CallbackClosure implements Closure
                 for (int idx = 0; idx < methods.length; idx++)
                 {
                     Method  method     = methods[idx];
-                    Class[] paramTypes = methods[idx].getParameterTypes();
+                    Class<?>[] paramTypes = methods[idx].getParameterTypes();
 
                     method.setAccessible(true);
                     if (method.getName().equals(callbackName) && typesMatch(paramTypes))
@@ -135,7 +135,7 @@ public class CallbackClosure implements Closure
      * @param methodParamTypes The method parameter types
      * @return <code>true</code> if the parameter types match
      */
-    private boolean typesMatch(Class[] methodParamTypes)
+    private boolean typesMatch(Class<?>[] methodParamTypes)
     {
         if ((methodParamTypes == null) || (_parameterTypes.length != methodParamTypes.length))
         {
@@ -156,12 +156,12 @@ public class CallbackClosure implements Closure
      */
     public void execute(Object obj) throws DdlUtilsException
     {
-        LinkedList queue = new LinkedList();
+        LinkedList<Class<?>> queue = new LinkedList<>();
 
         queue.add(obj.getClass());
         while (!queue.isEmpty())
         {
-            Class  type     = (Class)queue.removeFirst();
+            Class<?>  type     = queue.removeFirst();
             Method callback = (Method)_callbacks.get(type);
 
             if (callback != null)
@@ -186,7 +186,7 @@ public class CallbackClosure implements Closure
                 queue.add(type.getSuperclass());
             }
 
-            Class[] baseInterfaces = type.getInterfaces();
+            Class<?>[] baseInterfaces = type.getInterfaces();
 
             if (baseInterfaces != null)
             {

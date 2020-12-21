@@ -54,11 +54,11 @@ public class Table implements Serializable
     /** The table's type as read from the database. */
     private String _type = null;
     /** The columns in this table. */
-    private ArrayList _columns = new ArrayList();
+    private ArrayList<Column> _columns = new ArrayList<>();
     /** The foreign keys associated to this table. */
-    private ArrayList _foreignKeys = new ArrayList();
+    private ArrayList<ForeignKey> _foreignKeys = new ArrayList<>();
     /** The indices applied to this table. */
-    private ArrayList _indices = new ArrayList();
+    private ArrayList<Index> _indices = new ArrayList<>();
 
     /**
      * Returns the catalog of this table as read from the database.
@@ -245,11 +245,11 @@ public class Table implements Serializable
      * 
      * @param columns The columns
      */
-    public void addColumns(Collection columns)
+    public void addColumns(Collection<Column> columns)
     {
-        for (Iterator it = columns.iterator(); it.hasNext();)
+        for (Iterator<Column> it = columns.iterator(); it.hasNext();)
         {
-            addColumn((Column)it.next());
+            addColumn(it.next());
         }
     }
 
@@ -349,11 +349,11 @@ public class Table implements Serializable
      * 
      * @param foreignKeys The foreign keys
      */
-    public void addForeignKeys(Collection foreignKeys)
+    public void addForeignKeys(Collection<ForeignKey> foreignKeys)
     {
-        for (Iterator it = foreignKeys.iterator(); it.hasNext();)
+        for (Iterator<ForeignKey> it = foreignKeys.iterator(); it.hasNext();)
         {
-            addForeignKey((ForeignKey)it.next());
+            addForeignKey(it.next());
         }
     }
 
@@ -441,11 +441,11 @@ public class Table implements Serializable
      * 
      * @param indices The indices
      */
-    public void addIndices(Collection indices)
+    public void addIndices(Collection<Index> indices)
     {
-        for (Iterator it = indices.iterator(); it.hasNext();)
+        for (Iterator<Index> it = indices.iterator(); it.hasNext();)
         {
-            addIndex((Index)it.next());
+            addIndex(it.next());
         }
     }
 
@@ -464,9 +464,10 @@ public class Table implements Serializable
      * 
      * @return The unique indices
      */
-    public Index[] getNonUniqueIndices()
+    @SuppressWarnings("unchecked")
+	public Index[] getNonUniqueIndices()
     {
-        Collection nonUniqueIndices = CollectionUtils.select(_indices, new Predicate() {
+        Collection<Index> nonUniqueIndices = CollectionUtils.select(_indices, new Predicate() {
             public boolean evaluate(Object input) {
                 return !((Index)input).isUnique();
             }
@@ -480,9 +481,10 @@ public class Table implements Serializable
      * 
      * @return The unique indices
      */
-    public Index[] getUniqueIndices()
+    @SuppressWarnings("unchecked")
+	public Index[] getUniqueIndices()
     {
-        Collection uniqueIndices = CollectionUtils.select(_indices, new Predicate() {
+        Collection<Index> uniqueIndices = CollectionUtils.select(_indices, new Predicate() {
             public boolean evaluate(Object input) {
                 return ((Index)input).isUnique();
             }
@@ -524,9 +526,9 @@ public class Table implements Serializable
      */
     public boolean hasPrimaryKey()
     {
-        for (Iterator it = _columns.iterator(); it.hasNext(); )
+        for (Iterator<Column> it = _columns.iterator(); it.hasNext(); )
         {
-            Column column = (Column)it.next();
+            Column column = it.next();
 
             if (column.isPrimaryKey())
             {
@@ -560,9 +562,9 @@ public class Table implements Serializable
      */
     public Column findColumn(String name, boolean caseSensitive)
     {
-        for (Iterator it = _columns.iterator(); it.hasNext(); )
+        for (Iterator<Column> it = _columns.iterator(); it.hasNext(); )
         {
-            Column column = (Column)it.next();
+            Column column = it.next();
 
             if (caseSensitive)
             {
@@ -592,7 +594,7 @@ public class Table implements Serializable
     {
         int idx = 0;
 
-        for (Iterator it = _columns.iterator(); it.hasNext(); idx++)
+        for (Iterator<Column> it = _columns.iterator(); it.hasNext(); idx++)
         {
             if (column == it.next())
             {
@@ -754,7 +756,8 @@ public class Table implements Serializable
      */
     public Column[] getPrimaryKeyColumns()
     {
-        Collection pkColumns = CollectionUtils.select(_columns, new Predicate() {
+        @SuppressWarnings("unchecked")
+		Collection<Column> pkColumns = CollectionUtils.select(_columns, new Predicate() {
             public boolean evaluate(Object input) {
                 return ((Column)input).isPrimaryKey();
             }
@@ -789,7 +792,8 @@ public class Table implements Serializable
      */
     public Column[] getAutoIncrementColumns()
     {
-        Collection autoIncrColumns = CollectionUtils.select(_columns, new Predicate() {
+        @SuppressWarnings("unchecked")
+		Collection<Column> autoIncrColumns = CollectionUtils.select(_columns, new Predicate() {
             public boolean evaluate(Object input) {
                 return ((Column)input).isAutoIncrement();
             }
@@ -806,7 +810,8 @@ public class Table implements Serializable
      */
     public Column[] getRequiredColumns()
     {
-        Collection requiredColumns = CollectionUtils.select(_columns, new Predicate() {
+        @SuppressWarnings("unchecked")
+		Collection<Column> requiredColumns = CollectionUtils.select(_columns, new Predicate() {
             public boolean evaluate(Object input) {
                 return ((Column)input).isRequired();
             }
@@ -820,17 +825,18 @@ public class Table implements Serializable
      * 
      * @param caseSensitive Whether case matters
      */
-    public void sortForeignKeys(final boolean caseSensitive)
+	public void sortForeignKeys(final boolean caseSensitive)
     {
         if (!_foreignKeys.isEmpty())
         {
             final Collator collator = Collator.getInstance();
     
-            Collections.sort(_foreignKeys, new Comparator() {
-                public int compare(Object obj1, Object obj2)
+            Collections.sort(_foreignKeys, new Comparator<ForeignKey>() {
+			
+                public int compare(ForeignKey obj1, ForeignKey obj2)
                 {
-                    String fk1Name = ((ForeignKey)obj1).getName();
-                    String fk2Name = ((ForeignKey)obj2).getName();
+                    String fk1Name = (obj1).getName();
+                    String fk2Name = (obj2).getName();
 
                     if (!caseSensitive)
                     {
@@ -856,8 +862,8 @@ public class Table implements Serializable
             // TODO: For now we ignore catalog and schema (type should be irrelevant anyways)
             return new EqualsBuilder().append(_name,                     other._name)
                                       .append(_columns,                  other._columns)
-                                      .append(new HashSet(_foreignKeys), new HashSet(other._foreignKeys))
-                                      .append(new HashSet(_indices),     new HashSet(other._indices))
+                                      .append(new HashSet<>(_foreignKeys), new HashSet<>(other._foreignKeys))
+                                      .append(new HashSet<>(_indices),     new HashSet<>(other._indices))
                                       .isEquals();
         }
         else
@@ -874,8 +880,8 @@ public class Table implements Serializable
         // TODO: For now we ignore catalog and schema (type should be irrelevant anyways)
         return new HashCodeBuilder(17, 37).append(_name)
                                           .append(_columns)
-                                          .append(new HashSet(_foreignKeys))
-                                          .append(new HashSet(_indices))
+                                          .append(new HashSet<>(_foreignKeys))
+                                          .append(new HashSet<>(_indices))
                                           .toHashCode();
     }
 

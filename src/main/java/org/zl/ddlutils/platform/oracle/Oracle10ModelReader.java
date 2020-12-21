@@ -48,7 +48,7 @@ public class Oracle10ModelReader extends Oracle8ModelReader
     /**
      * {@inheritDoc}
      */
-	protected Table readTable(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+	protected Table readTable(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
 	{
 		// Oracle 10 added the recycle bin which contains dropped database objects not yet purged
 		// Since we don't want entries from the recycle bin, we filter them out

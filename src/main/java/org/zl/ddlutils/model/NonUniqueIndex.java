@@ -45,12 +45,13 @@ public class NonUniqueIndex extends IndexImplBase
     /**
      * {@inheritDoc}
      */
-    public Index getClone() throws ModelException
+    @SuppressWarnings("unchecked")
+	public Index getClone() throws ModelException
     {
         NonUniqueIndex result = new NonUniqueIndex();
 
         result._name    = _name;
-        result._columns = (ArrayList)_columns.clone();
+        result._columns = (ArrayList<IndexColumn>)_columns.clone();
 
         return result;
     }

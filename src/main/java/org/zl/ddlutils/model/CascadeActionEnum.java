@@ -21,8 +21,6 @@ package org.zl.ddlutils.model;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.enums.ValuedEnum;
 
 /**
@@ -100,22 +98,14 @@ public class CascadeActionEnum extends ValuedEnum
         return (CascadeActionEnum)getEnum(CascadeActionEnum.class, intValue);
     }
 
-    /**
-     * Returns the map of enum values.
-     * 
-     * @return The map of enum values
-     */
-    public static Map getEnumMap()
-    {
-        return getEnumMap(CascadeActionEnum.class);
-    }
 
     /**
      * Returns a list of all enum values.
      * 
      * @return The list of enum values
      */
-    public static List getEnumList()
+    @SuppressWarnings("unchecked")
+	public static List<CascadeActionEnum> getEnumList()
     {
         return getEnumList(CascadeActionEnum.class);
     }
@@ -125,7 +115,8 @@ public class CascadeActionEnum extends ValuedEnum
      * 
      * @return The iterator
      */
-    public static Iterator iterator()
+    @SuppressWarnings("unchecked")
+	public static Iterator<CascadeActionEnum> iterator()
     {
         return iterator(CascadeActionEnum.class);
     }

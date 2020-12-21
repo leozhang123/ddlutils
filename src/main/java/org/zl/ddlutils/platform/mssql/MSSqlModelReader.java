@@ -80,7 +80,7 @@ public class MSSqlModelReader extends JdbcModelReader
     /**
      * {@inheritDoc}
      */
-	protected Table readTable(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+	protected Table readTable(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
 	{
         String tableName = (String)values.get("TABLE_NAME");
 
@@ -167,7 +167,7 @@ public class MSSqlModelReader extends JdbcModelReader
     /**
      * {@inheritDoc}
      */
-	protected Column readColumn(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+	protected Column readColumn(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
 	{
 		Column column       = super.readColumn(metaData, values);
 		String defaultValue = column.getDefaultValue();

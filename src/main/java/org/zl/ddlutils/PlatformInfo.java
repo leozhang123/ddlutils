@@ -152,22 +152,22 @@ public class PlatformInfo
     private String _sqlCommandDelimiter = ";";
 
     /** Contains non-default mappings from jdbc to native types. */
-    private HashMap _nativeTypes = new HashMap();
+    private HashMap<Integer, String> _nativeTypes = new HashMap<>();
 
     /** Contains the jdbc types corresponding to the native types for non-default mappings. */
-    private HashMap _targetJdbcTypes = new HashMap();
+    private HashMap<Integer, Integer> _targetJdbcTypes = new HashMap<>();
 
     /** Contains those JDBC types whose corresponding native types have a null value as the default value. */
-    private HashSet _typesWithNullDefault = new HashSet();
+    private HashSet<Integer> _typesWithNullDefault = new HashSet<>();
 
     /** Contains those JDBC types whose corresponding native types are types that have a size on this platform. */
-    private HashSet _typesWithSize = new HashSet();
+    private HashSet<Integer> _typesWithSize = new HashSet<>();
 
     /** Contains the default sizes for those JDBC types whose corresponding native types require a size. */
-    private HashMap _typesDefaultSizes = new HashMap();
+    private HashMap<Integer, Integer> _typesDefaultSizes = new HashMap<>();
 
     /** Contains those JDBC types whose corresponding native types are types that have precision and scale on this platform. */
-    private HashSet _typesWithPrecisionAndScale = new HashSet();
+    private HashSet<Integer> _typesWithPrecisionAndScale = new HashSet<>();
 
     /** The default ON UPDATE action. */
     private CascadeActionEnum _defaultOnUpdateAction = CascadeActionEnum.NONE;
@@ -176,16 +176,16 @@ public class PlatformInfo
     private CascadeActionEnum _defaultOnDeleteAction = CascadeActionEnum.NONE;
 
     /** Contains the supported ON UPDATE actions. */
-    private HashSet _supportedOnUpdateActions = new HashSet();
+    private HashSet<CascadeActionEnum> _supportedOnUpdateActions = new HashSet<>();
 
     /** Contains the supported ON DELETE actions. */
-    private HashSet _supportedOnDeleteActions = new HashSet();
+    private HashSet<CascadeActionEnum> _supportedOnDeleteActions = new HashSet<>();
 
     /** Contains for each ON UPDATE action the list of equivalent actions. */
-    private HashMap _equivalentOnUpdateActions = new HashMap();
+    private HashMap<CascadeActionEnum, Set<CascadeActionEnum>> _equivalentOnUpdateActions = new HashMap<>();
 
     /** Contains for each ON DELETE action the list of equivalent actions. */
-    private HashMap _equivalentOnDeleteActions = new HashMap();
+    private HashMap<CascadeActionEnum, Set<CascadeActionEnum>> _equivalentOnDeleteActions = new HashMap<>();
 
     /**
      * Creates a new platform info object.
@@ -1295,17 +1295,17 @@ public class PlatformInfo
     {
         if (!actionA.equals(actionB))
         {
-            Set actionsEquivalentToActionA = (Set)_equivalentOnUpdateActions.get(actionA);
-            Set actionsEquivalentToActionB = (Set)_equivalentOnUpdateActions.get(actionB);
+            Set<CascadeActionEnum> actionsEquivalentToActionA = _equivalentOnUpdateActions.get(actionA);
+            Set<CascadeActionEnum> actionsEquivalentToActionB = _equivalentOnUpdateActions.get(actionB);
 
             if (actionsEquivalentToActionA == null)
             {
-                actionsEquivalentToActionA = new HashSet();
+                actionsEquivalentToActionA = new HashSet<CascadeActionEnum>();
                 _equivalentOnUpdateActions.put(actionA, actionsEquivalentToActionA);
             }
             if (actionsEquivalentToActionB == null)
             {
-                actionsEquivalentToActionB = new HashSet();
+                actionsEquivalentToActionB = new HashSet<CascadeActionEnum>();
                 _equivalentOnUpdateActions.put(actionB, actionsEquivalentToActionB);
             }
             actionsEquivalentToActionA.add(actionB);
@@ -1323,7 +1323,7 @@ public class PlatformInfo
      */
     public boolean areEquivalentOnUpdateActions(CascadeActionEnum actionA, CascadeActionEnum actionB)
     {
-        Set actionsEquivalentToActionA = (Set)_equivalentOnUpdateActions.get(actionA);
+        Set<CascadeActionEnum> actionsEquivalentToActionA = _equivalentOnUpdateActions.get(actionA);
 
         return actionsEquivalentToActionA == null ? false : actionsEquivalentToActionA.contains(actionB);
     }
@@ -1339,17 +1339,17 @@ public class PlatformInfo
     {
         if (!actionA.equals(actionB))
         {
-            Set actionsEquivalentToActionA = (Set)_equivalentOnDeleteActions.get(actionA);
-            Set actionsEquivalentToActionB = (Set)_equivalentOnDeleteActions.get(actionB);
+            Set<CascadeActionEnum> actionsEquivalentToActionA = _equivalentOnDeleteActions.get(actionA);
+            Set<CascadeActionEnum> actionsEquivalentToActionB = _equivalentOnDeleteActions.get(actionB);
 
             if (actionsEquivalentToActionA == null)
             {
-                actionsEquivalentToActionA = new HashSet();
+                actionsEquivalentToActionA = new HashSet<>();
                 _equivalentOnDeleteActions.put(actionA, actionsEquivalentToActionA);
             }
             if (actionsEquivalentToActionB == null)
             {
-                actionsEquivalentToActionB = new HashSet();
+                actionsEquivalentToActionB = new HashSet<>();
                 _equivalentOnDeleteActions.put(actionB, actionsEquivalentToActionB);
             }
             actionsEquivalentToActionA.add(actionB);
@@ -1367,7 +1367,7 @@ public class PlatformInfo
      */
     public boolean areEquivalentOnDeleteActions(CascadeActionEnum actionA, CascadeActionEnum actionB)
     {
-        Set actionsEquivalentToActionA = (Set)_equivalentOnDeleteActions.get(actionA);
+        Set<CascadeActionEnum> actionsEquivalentToActionA = _equivalentOnDeleteActions.get(actionA);
 
         return actionsEquivalentToActionA == null ? false : actionsEquivalentToActionA.contains(actionB);
     }

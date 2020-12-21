@@ -27,6 +27,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -50,9 +51,9 @@ import org.zl.ddlutils.model.Table;
  * 
  * @version $Revision: 289996 $
  */
-public class ModelBasedResultSetIterator implements Iterator
+public class ModelBasedResultSetIterator implements Iterator<DynaBean>
 {
-    /** The platform. */
+	/** The platform. */
     private PlatformImplBase _platform;
     /** The base result set. */
     private ResultSet _resultSet;
@@ -61,9 +62,10 @@ public class ModelBasedResultSetIterator implements Iterator
     /** Whether the case of identifiers matters. */
     private boolean _caseSensitive;
     /** Maps column names to table objects as given by the query hints. */
-    private Map _preparedQueryHints;
+    private Map<String, Table> _preparedQueryHints;
     /** Maps column names to properties. */
-    private Map _columnsToProperties = new ListOrderedMap();
+    @SuppressWarnings("unchecked")
+	private Map<String, String> _columnsToProperties = new ListOrderedMap();
     /** Whether the next call to hasNext or next needs advancement. */
     private boolean _needsAdvancing = true;
     /** Whether we're already at the end of the result set. */
@@ -81,6 +83,7 @@ public class ModelBasedResultSetIterator implements Iterator
      *                           (optional)
      * @param cleanUpAfterFinish Whether to close the statement and connection after finishing
      *                           the iteration, upon on exception, or when this iterator is garbage collected
+     * @throws DatabaseOperationException 
      */
     public ModelBasedResultSetIterator(PlatformImplBase platform, Database model, ResultSet resultSet, Table[] queryHints, boolean cleanUpAfterFinish) throws DatabaseOperationException
     {
@@ -173,9 +176,9 @@ public class ModelBasedResultSetIterator implements Iterator
             DynaProperty[] props = new DynaProperty[_columnsToProperties.size()];
             int            idx   = 0;
 
-            for (Iterator it = _columnsToProperties.values().iterator(); it.hasNext(); idx++)
+            for (Iterator<String> it = _columnsToProperties.values().iterator(); it.hasNext(); idx++)
             {
-                props[idx] = new DynaProperty((String)it.next());
+                props[idx] = new DynaProperty(it.next());
             }
             _dynaClass = new BasicDynaClass("result", BasicDynaBean.class, props);
         }
@@ -188,9 +191,9 @@ public class ModelBasedResultSetIterator implements Iterator
      * @param queryHints The query hints
      * @return The column name -> table map
      */
-    private Map prepareQueryHints(Table[] queryHints)
+    private Map<String, Table> prepareQueryHints(Table[] queryHints)
     {
-        Map result = new HashMap();
+        Map<String, Table> result = new HashMap<>();
 
         for (int tableIdx = 0; (queryHints != null) && (tableIdx < queryHints.length); tableIdx++)
         {
@@ -223,7 +226,7 @@ public class ModelBasedResultSetIterator implements Iterator
     /**
      * {@inheritDoc}
      */
-    public Object next() throws DatabaseOperationException
+    public DynaBean next() throws DatabaseOperationException
     {
         advanceIfNecessary();
         if (_isAtEnd)
@@ -244,11 +247,11 @@ public class ModelBasedResultSetIterator implements Iterator
                     table = dynaClass.getTable();
                 }
 
-                for (Iterator it = _columnsToProperties.entrySet().iterator(); it.hasNext();)
+                for (Iterator<Entry<String, String>> it = _columnsToProperties.entrySet().iterator(); it.hasNext();)
                 {
-                    Map.Entry entry      = (Map.Entry)it.next();
-                    String    columnName = (String)entry.getKey();
-                    String    propName   = (String)entry.getValue();
+                    Map.Entry<String, String> entry      = it.next();
+                    String    columnName = entry.getKey();
+                    String    propName   = entry.getValue();
                     Table     curTable   = table;
 
                     if (curTable == null)
@@ -385,4 +388,5 @@ public class ModelBasedResultSetIterator implements Iterator
             return false;
         }
     }
+
 }

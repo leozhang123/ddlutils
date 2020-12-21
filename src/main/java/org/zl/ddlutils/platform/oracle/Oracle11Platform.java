@@ -29,6 +29,7 @@ public class Oracle11Platform extends Oracle9Platform {
     /** The standard Oracle jdbc driver. */
     public static final String JDBC_DRIVER = "oracle.jdbc.OracleDriver";
     
+    public static final String JDBC_DRIVER_NAME = "Oracle JDBC driver";
     /**
      * Creates a new platform instance.
      */

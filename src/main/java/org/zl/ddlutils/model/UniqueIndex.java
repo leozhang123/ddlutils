@@ -46,12 +46,13 @@ public class UniqueIndex extends IndexImplBase
     /**
      * {@inheritDoc}
      */
-    public Index getClone() throws ModelException
+    @SuppressWarnings("unchecked")
+	public Index getClone() throws ModelException
     {
         UniqueIndex result = new UniqueIndex();
 
         result._name    = _name;
-        result._columns = (ArrayList)_columns.clone();
+        result._columns = (ArrayList<IndexColumn>)_columns.clone();
 
         return result;
     }

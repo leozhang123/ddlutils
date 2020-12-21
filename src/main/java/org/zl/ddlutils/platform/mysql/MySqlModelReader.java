@@ -54,7 +54,7 @@ public class MySqlModelReader extends JdbcModelReader
     /**
      * {@inheritDoc}
      */
-    protected Table readTable(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+    protected Table readTable(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
         // TODO This needs some more work, since table names can be case sensitive or lowercase
         //      depending on the platform (really cute).
@@ -72,7 +72,7 @@ public class MySqlModelReader extends JdbcModelReader
     /**
      * {@inheritDoc}
      */
-    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map values) throws SQLException
+    protected Column readColumn(DatabaseMetaDataWrapper metaData, Map<String, Object> values) throws SQLException
     {
         Column column = super.readColumn(metaData, values);
 

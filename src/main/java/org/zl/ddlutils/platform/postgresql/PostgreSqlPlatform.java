@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.zl.ddlutils.DatabaseOperationException;
@@ -122,7 +123,7 @@ public class PostgreSqlPlatform extends PlatformImplBase
      * @param parameters          Additional parameters for the operation
      * @param createDb            Whether to create or drop the database
      */
-    private void createOrDropDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map parameters, boolean createDb) throws DatabaseOperationException, UnsupportedOperationException
+    private void createOrDropDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map<String, String> parameters, boolean createDb) throws DatabaseOperationException, UnsupportedOperationException
     {
         if (JDBC_DRIVER.equals(jdbcDriverClassName))
         {
@@ -145,9 +146,9 @@ public class PostgreSqlPlatform extends PlatformImplBase
             sql.append(dbName);
             if ((parameters != null) && !parameters.isEmpty())
             {
-                for (Iterator it = parameters.entrySet().iterator(); it.hasNext();)
+                for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext();)
                 {
-                    Map.Entry entry = (Map.Entry)it.next();
+                    Map.Entry<String, String> entry = it.next();
 
                     sql.append(" ");
                     sql.append(entry.getKey().toString());
@@ -206,7 +207,7 @@ public class PostgreSqlPlatform extends PlatformImplBase
     /**
      * {@inheritDoc}
      */
-    public void createDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map parameters) throws DatabaseOperationException, UnsupportedOperationException
+    public void createDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map<String, String> parameters) throws DatabaseOperationException, UnsupportedOperationException
     {
         // With PostgreSQL, you create a database by executing "CREATE DATABASE" in an existing database (usually 
         // the template1 database because it usually exists)
@@ -309,6 +310,7 @@ public class PostgreSqlPlatform extends PlatformImplBase
      * @param params       The parameters used in the creation of new tables. Note that for existing
      *                     tables, the parameters won't be applied
      * @param change       The change object
+     * @throws IOException 
      */
     public void processChange(Database           currentModel,
                               CreationParameters params,

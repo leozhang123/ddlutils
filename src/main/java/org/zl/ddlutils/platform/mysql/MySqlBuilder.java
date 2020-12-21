@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.sql.Types;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.zl.ddlutils.Platform;
 import org.zl.ddlutils.alteration.ColumnDefinitionChange;
@@ -109,16 +110,16 @@ public class MySqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    protected void writeTableCreationStmtEnding(Table table, Map parameters) throws IOException
+    protected void writeTableCreationStmtEnding(Table table, Map<String, String> parameters) throws IOException
     {
         if (parameters != null)
         {
             print(" ");
             // MySql supports additional table creation options which are appended
             // at the end of the CREATE TABLE statement
-            for (Iterator it = parameters.entrySet().iterator(); it.hasNext();)
+            for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry entry = (Map.Entry)it.next();
+                Map.Entry<String, String> entry = it.next();
 
                 print(entry.getKey().toString());
                 if (entry.getValue() != null)
@@ -162,6 +163,7 @@ public class MySqlBuilder extends SqlBuilder
      * @param newColumn  The new column
      * @param prevColumn The column after which the new column shall be added; <code>null</code>
      *                   if the new column is to be inserted at the beginning
+     * @throws IOException 
      */
     public void insertColumn(Table table, Column newColumn, Column prevColumn) throws IOException
     {
@@ -187,6 +189,7 @@ public class MySqlBuilder extends SqlBuilder
      * 
      * @param table  The table
      * @param column The column to drop
+     * @throws IOException 
      */
     public void dropColumn(Table table, Column column) throws IOException
     {
@@ -202,6 +205,7 @@ public class MySqlBuilder extends SqlBuilder
      * Writes the SQL to drop the primary key of the given table.
      * 
      * @param table The table
+     * @throws IOException 
      */
     public void dropPrimaryKey(Table table) throws IOException
     {
@@ -217,6 +221,7 @@ public class MySqlBuilder extends SqlBuilder
      * 
      * @param table  The table
      * @param column The new column definition
+     * @throws IOException 
      */
     public void recreateColumn(Table table, Column column) throws IOException
     {

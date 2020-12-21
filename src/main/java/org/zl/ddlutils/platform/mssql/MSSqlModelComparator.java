@@ -32,6 +32,7 @@ import org.zl.ddlutils.alteration.ModelComparator;
 import org.zl.ddlutils.alteration.RemoveForeignKeyChange;
 import org.zl.ddlutils.alteration.RemoveIndexChange;
 import org.zl.ddlutils.alteration.RemovePrimaryKeyChange;
+import org.zl.ddlutils.alteration.TableChange;
 import org.zl.ddlutils.alteration.TableDefinitionChangesPredicate;
 import org.zl.ddlutils.model.Column;
 import org.zl.ddlutils.model.Database;
@@ -66,22 +67,22 @@ public class MSSqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForPrimaryKeyChanges(Database sourceModel,
+    protected List<TableChange> checkForPrimaryKeyChanges(Database sourceModel,
                                              Table    sourceTable,
                                              Database intermediateModel,
                                              Table    intermediateTable,
                                              Database targetModel,
                                              Table    targetTable)
     {
-        List changes = super.checkForPrimaryKeyChanges(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
+        List<TableChange> changes = super.checkForPrimaryKeyChanges(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
 
         // now we add pk changes if one of the pk columns was changed
         // we only need to do this if there is no other pk change (which can only be a remove or add change or both)
         if (changes.isEmpty())
         {
-            List columns = getRelevantChangedColumns(sourceTable, targetTable);
+            List<Column> columns = getRelevantChangedColumns(sourceTable, targetTable);
 
-            for (Iterator it = columns.iterator(); it.hasNext();)
+            for (Iterator<Column> it = columns.iterator(); it.hasNext();)
             {
                 Column targetColumn = (Column)it.next();
 
@@ -99,21 +100,21 @@ public class MSSqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForRemovedIndexes(Database sourceModel,
+    protected List<TableChange> checkForRemovedIndexes(Database sourceModel,
                                           Table    sourceTable,
                                           Database intermediateModel,
                                           Table    intermediateTable,
                                           Database targetModel,
                                           Table    targetTable)
     {
-        List    changes           = super.checkForRemovedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
+        List<TableChange>    changes           = super.checkForRemovedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
         Index[] targetIndexes     = targetTable.getIndices();
-        List    additionalChanges = new ArrayList();
+        List<RemoveIndexChange>    additionalChanges = new ArrayList<>();
 
         // removing all indexes that are maintained and that use a changed column
         if (targetIndexes.length > 0)
         {
-            List columns = getRelevantChangedColumns(sourceTable, targetTable);
+            List<Column> columns = getRelevantChangedColumns(sourceTable, targetTable);
 
             if (!columns.isEmpty())
             {
@@ -123,7 +124,7 @@ public class MSSqlModelComparator extends ModelComparator
 
                     if (sourceIndex != null)
                     {
-                        for (Iterator columnIt = columns.iterator(); columnIt.hasNext();)
+                        for (Iterator<Column> columnIt = columns.iterator(); columnIt.hasNext();)
                         {
                             Column targetColumn = (Column)columnIt.next();
 
@@ -135,7 +136,7 @@ public class MSSqlModelComparator extends ModelComparator
                         }
                     }
                 }
-                for (Iterator changeIt = additionalChanges.iterator(); changeIt.hasNext();)
+                for (Iterator<RemoveIndexChange> changeIt = additionalChanges.iterator(); changeIt.hasNext();)
                 {
                     ((RemoveIndexChange)changeIt.next()).apply(intermediateModel, isCaseSensitive());
                 }
@@ -148,16 +149,16 @@ public class MSSqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForAddedIndexes(Database sourceModel,
+    protected List<TableChange> checkForAddedIndexes(Database sourceModel,
                                         Table    sourceTable,
                                         Database intermediateModel,
                                         Table    intermediateTable,
                                         Database targetModel,
                                         Table    targetTable)
     {
-        List    changes           = super.checkForAddedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
+        List<TableChange>    changes           = super.checkForAddedIndexes(sourceModel, sourceTable, intermediateModel, intermediateTable, targetModel, targetTable);
         Index[] targetIndexes     = targetTable.getIndices();
-        List    additionalChanges = new ArrayList();
+        List<AddIndexChange>    additionalChanges = new ArrayList<>();
 
         // re-adding all indexes that are maintained and that use a changed column
         if (targetIndexes.length > 0)
@@ -172,7 +173,7 @@ public class MSSqlModelComparator extends ModelComparator
                     additionalChanges.add(new AddIndexChange(intermediateTable.getName(), targetIndexes[indexIdx]));
                 }
             }
-            for (Iterator changeIt = additionalChanges.iterator(); changeIt.hasNext();)
+            for (Iterator<AddIndexChange> changeIt = additionalChanges.iterator(); changeIt.hasNext();)
             {
                 ((AddIndexChange)changeIt.next()).apply(intermediateModel, isCaseSensitive());
             }
@@ -184,12 +185,12 @@ public class MSSqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForRemovedForeignKeys(Database sourceModel,
+    protected List<RemoveForeignKeyChange> checkForRemovedForeignKeys(Database sourceModel,
                                               Database intermediateModel,
                                               Database targetModel)
     {
-        List changes           = super.checkForRemovedForeignKeys(sourceModel, intermediateModel, targetModel);
-        List additionalChanges = new ArrayList();
+        List<RemoveForeignKeyChange> changes           = super.checkForRemovedForeignKeys(sourceModel, intermediateModel, targetModel);
+        List<RemoveForeignKeyChange> additionalChanges = new ArrayList<>();
 
         // removing all foreign keys that are maintained and that use a changed column
         for (int tableIdx = 0; tableIdx < targetModel.getTableCount(); tableIdx++)
@@ -199,7 +200,7 @@ public class MSSqlModelComparator extends ModelComparator
 
             if (sourceTable != null)
             {
-                List columns = getRelevantChangedColumns(sourceTable, targetTable);
+                List<Column> columns = getRelevantChangedColumns(sourceTable, targetTable);
 
                 if (!columns.isEmpty())
                 {
@@ -210,7 +211,7 @@ public class MSSqlModelComparator extends ModelComparator
 
                         if (sourceFk != null)
                         {
-                            for (Iterator columnIt = columns.iterator(); columnIt.hasNext();)
+                            for (Iterator<Column> columnIt = columns.iterator(); columnIt.hasNext();)
                             {
                                 Column targetColumn = (Column)columnIt.next();
 
@@ -225,7 +226,7 @@ public class MSSqlModelComparator extends ModelComparator
                 }
             }
         }
-        for (Iterator changeIt = additionalChanges.iterator(); changeIt.hasNext();)
+        for (Iterator<RemoveForeignKeyChange> changeIt = additionalChanges.iterator(); changeIt.hasNext();)
         {
             ((RemoveForeignKeyChange)changeIt.next()).apply(intermediateModel, isCaseSensitive());
         }
@@ -236,12 +237,12 @@ public class MSSqlModelComparator extends ModelComparator
     /**
      * {@inheritDoc}
      */
-    protected List checkForAddedForeignKeys(Database sourceModel,
+    protected List<AddForeignKeyChange> checkForAddedForeignKeys(Database sourceModel,
                                             Database intermediateModel,
                                             Database targetModel)
     {
-        List changes           = super.checkForAddedForeignKeys(sourceModel, intermediateModel, targetModel);
-        List additionalChanges = new ArrayList();
+        List<AddForeignKeyChange> changes           = super.checkForAddedForeignKeys(sourceModel, intermediateModel, targetModel);
+        List<AddForeignKeyChange> additionalChanges = new ArrayList<>();
 
         // re-adding all foreign keys that are maintained and that use a changed column
         for (int tableIdx = 0; tableIdx < targetModel.getTableCount(); tableIdx++)
@@ -265,7 +266,7 @@ public class MSSqlModelComparator extends ModelComparator
                 }
             }
         }
-        for (Iterator changeIt = additionalChanges.iterator(); changeIt.hasNext();)
+        for (Iterator<AddForeignKeyChange> changeIt = additionalChanges.iterator(); changeIt.hasNext();)
         {
             ((AddForeignKeyChange)changeIt.next()).apply(intermediateModel, isCaseSensitive());
         }
@@ -281,9 +282,9 @@ public class MSSqlModelComparator extends ModelComparator
      * @param targetTable The target table
      * @return The columns (from the target table)
      */
-    private List getRelevantChangedColumns(Table sourceTable, Table targetTable)
+    private List<Column> getRelevantChangedColumns(Table sourceTable, Table targetTable)
     {
-        List result = new ArrayList();
+        List<Column> result = new ArrayList<>();
 
         for (int columnIdx = 0; columnIdx < targetTable.getColumnCount(); columnIdx++)
         {

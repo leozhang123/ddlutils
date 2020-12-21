@@ -41,9 +41,9 @@ public class DefaultTableDefinitionChangesPredicate implements TableDefinitionCh
     /**
      * {@inheritDoc}
      */
-    public boolean areSupported(Table intermediateTable, List changes)
+    public boolean areSupported(Table intermediateTable, List<TableChange> changes)
     {
-        for (Iterator changeIt = changes.iterator(); changeIt.hasNext();)
+        for (Iterator<TableChange> changeIt = changes.iterator(); changeIt.hasNext();)
         {
             TableChange change = (TableChange)changeIt.next();
 

@@ -21,8 +21,6 @@ package org.zl.ddlutils.model;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.enums.ValuedEnum;
 
 /**
@@ -97,21 +95,12 @@ public class JdbcTypeCategoryEnum extends ValuedEnum
     }
 
     /**
-     * Returns the map of enum values.
-     * 
-     * @return The map of enum values
-     */
-    public static Map getEnumMap()
-    {
-        return getEnumMap(JdbcTypeCategoryEnum.class);
-    }
-
-    /**
      * Returns a list of all enum values.
      * 
      * @return The list of enum values
      */
-    public static List getEnumList()
+    @SuppressWarnings("unchecked")
+	public static List<JdbcTypeCategoryEnum> getEnumList()
     {
         return getEnumList(JdbcTypeCategoryEnum.class);
     }
@@ -121,7 +110,8 @@ public class JdbcTypeCategoryEnum extends ValuedEnum
      * 
      * @return The iterator
      */
-    public static Iterator iterator()
+    @SuppressWarnings("unchecked")
+	public static Iterator<JdbcTypeCategoryEnum> iterator()
     {
         return iterator(JdbcTypeCategoryEnum.class);
     }

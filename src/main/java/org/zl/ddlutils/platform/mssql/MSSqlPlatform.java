@@ -31,6 +31,7 @@ import org.zl.ddlutils.PlatformInfo;
 import org.zl.ddlutils.alteration.AddColumnChange;
 import org.zl.ddlutils.alteration.AddPrimaryKeyChange;
 import org.zl.ddlutils.alteration.ColumnDefinitionChange;
+import org.zl.ddlutils.alteration.ModelChange;
 import org.zl.ddlutils.alteration.ModelComparator;
 import org.zl.ddlutils.alteration.PrimaryKeyChange;
 import org.zl.ddlutils.alteration.RemoveColumnChange;
@@ -233,7 +234,7 @@ public class MSSqlPlatform extends PlatformImplBase
     /**
      * {@inheritDoc}
      */
-    protected Database processChanges(Database model, Collection changes, CreationParameters params) throws IOException, DdlUtilsException
+    protected Database processChanges(Database model, Collection<ModelChange> changes, CreationParameters params) throws IOException, DdlUtilsException
     {
         if (!changes.isEmpty())
         {
@@ -249,6 +250,7 @@ public class MSSqlPlatform extends PlatformImplBase
      * @param params       The parameters used in the creation of new tables. Note that for existing
      *                     tables, the parameters won't be applied
      * @param change       The change object
+     * @throws IOException 
      */
     public void processChange(Database           currentModel,
                               CreationParameters params,
@@ -268,6 +270,7 @@ public class MSSqlPlatform extends PlatformImplBase
      * @param params       The parameters used in the creation of new tables. Note that for existing
      *                     tables, the parameters won't be applied
      * @param change       The change object
+     * @throws IOException 
      */
     public void processChange(Database               currentModel,
                               CreationParameters     params,
@@ -286,6 +289,7 @@ public class MSSqlPlatform extends PlatformImplBase
      * @param params       The parameters used in the creation of new tables. Note that for existing
      *                     tables, the parameters won't be applied
      * @param change       The change object
+     * @throws IOException 
      */
     public void processChange(Database               currentModel,
                               CreationParameters     params,
@@ -304,6 +308,7 @@ public class MSSqlPlatform extends PlatformImplBase
      * @param params       The parameters used in the creation of new tables. Note that for existing
      *                     tables, the parameters won't be applied
      * @param change       The change object
+     * @throws IOException 
      */
     public void processChange(Database           currentModel,
                               CreationParameters params,

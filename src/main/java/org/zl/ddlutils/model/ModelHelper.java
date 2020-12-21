@@ -41,7 +41,7 @@ public class ModelHelper
      */
     public void checkForForeignKeysToAndFromTables(Database model, Table[] tables) throws ModelException
     {
-        List tableList = Arrays.asList(tables);
+        List<Table> tableList = Arrays.asList(tables);
 
         for (int tableIdx = 0; tableIdx < model.getTableCount(); tableIdx++)
         {
@@ -69,13 +69,13 @@ public class ModelHelper
      */
     public void removeForeignKeysToAndFromTables(Database model, Table[] tables)
     {
-        List tableList = Arrays.asList(tables);
+        List<Table> tableList = Arrays.asList(tables);
 
         for (int tableIdx = 0; tableIdx < model.getTableCount(); tableIdx++)
         {
             Table     curTable         = model.getTable(tableIdx);
             boolean   curTableIsInList = tableList.contains(curTable);
-            ArrayList fksToRemove      = new ArrayList();
+            ArrayList<ForeignKey> fksToRemove      = new ArrayList<>();
 
             for (int fkIdx = 0; fkIdx < curTable.getForeignKeyCount(); fkIdx++)
             {
@@ -85,7 +85,7 @@ public class ModelHelper
                 {
                     fksToRemove.add(curFk);
                 }
-                for (Iterator fkIt = fksToRemove.iterator(); fkIt.hasNext();)
+                for (Iterator<ForeignKey> fkIt = fksToRemove.iterator(); fkIt.hasNext();)
                 {
                     curTable.removeForeignKey((ForeignKey)fkIt.next());
                 }

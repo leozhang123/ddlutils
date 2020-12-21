@@ -55,7 +55,7 @@ public class Database implements Serializable
     /** The version of the model. */
     private String _version;
     /** The tables. */
-    private ArrayList _tables = new ArrayList();
+    private ArrayList<Table> _tables = new ArrayList<>();
     /** The dyna class cache for this model. */
     private transient DynaClassCache _dynaClassCache = null;
 
@@ -80,6 +80,7 @@ public class Database implements Serializable
      * Note that the other database is not changed.
      * 
      * @param otherDb The other database model
+     * @throws ModelException 
      */
     public void mergeWith(Database otherDb) throws ModelException
     {
@@ -237,11 +238,11 @@ public class Database implements Serializable
      * 
      * @param tables The tables to add
      */
-    public void addTables(Collection tables)
+    public void addTables(Collection<Table> tables)
     {
-        for (Iterator it = tables.iterator(); it.hasNext();)
+        for (Iterator<Table> it = tables.iterator(); it.hasNext();)
         {
-            addTable((Table)it.next());
+            addTable(it.next());
         }
     }
 
@@ -286,7 +287,7 @@ public class Database implements Serializable
      */
     public void removeAllTablesExcept(Table[] tables)
     {
-        ArrayList allTables = new ArrayList(_tables);
+        ArrayList<Table> allTables = new ArrayList<>(_tables);
 
         allTables.removeAll(Arrays.asList(tables));
         _tables.removeAll(allTables);
@@ -298,6 +299,7 @@ public class Database implements Serializable
      * Initializes the model by establishing the relationships between elements in this model encoded
      * eg. in foreign keys etc. Also checks that the model elements are valid (table and columns have
      * a name, foreign keys rference existing tables etc.) 
+     * @throws ModelException 
      */
     public void initialize() throws ModelException
     {
@@ -306,10 +308,10 @@ public class Database implements Serializable
         // * columns in foreign key references
         // * columns in indices
         // * columns in uniques
-        HashSet namesOfProcessedTables  = new HashSet();
-        HashSet namesOfProcessedColumns = new HashSet();
-        HashSet namesOfProcessedFks     = new HashSet();
-        HashSet namesOfProcessedIndices = new HashSet();
+        HashSet<String> namesOfProcessedTables  = new HashSet<>();
+        HashSet<String> namesOfProcessedColumns = new HashSet<>();
+        HashSet<String> namesOfProcessedFks     = new HashSet<>();
+        HashSet<String> namesOfProcessedIndices = new HashSet<>();
         int     tableIdx = 0;
 
         if ((getName() == null) || (getName().length() == 0))
@@ -317,9 +319,9 @@ public class Database implements Serializable
             throw new ModelException("The database model has no name");
         }
 
-        for (Iterator tableIt = _tables.iterator(); tableIt.hasNext(); tableIdx++)
+        for (Iterator<Table> tableIt = _tables.iterator(); tableIt.hasNext(); tableIdx++)
         {
-            Table curTable = (Table)tableIt.next();
+            Table curTable = tableIt.next();
 
             if ((curTable.getName() == null) || (curTable.getName().length() == 0))
             {
@@ -486,9 +488,9 @@ public class Database implements Serializable
      */
     public Table findTable(String name, boolean caseSensitive)
     {
-        for (Iterator iter = _tables.iterator(); iter.hasNext();)
+        for (Iterator<Table> iter = _tables.iterator(); iter.hasNext();)
         {
-            Table table = (Table) iter.next();
+            Table table = iter.next();
 
             if (caseSensitive)
             {
@@ -517,7 +519,7 @@ public class Database implements Serializable
      */
     public Table[] findTables(String[] tableNames, boolean caseSensitive)
     {
-        ArrayList tables = new ArrayList();
+        ArrayList<Table> tables = new ArrayList<>();
 
         if (tableNames != null)
         {
@@ -545,13 +547,13 @@ public class Database implements Serializable
      */
     public Table[] findTables(String tableNameRegExp, boolean caseSensitive) throws PatternSyntaxException
     {
-        ArrayList tables = new ArrayList();
+        ArrayList<Table> tables = new ArrayList<>();
 
         if (tableNameRegExp != null)
         {
             Pattern pattern = Pattern.compile(tableNameRegExp);
 
-            for (Iterator tableIt = _tables.iterator(); tableIt.hasNext();)
+            for (Iterator<Table> tableIt = _tables.iterator(); tableIt.hasNext();)
             {
                 Table  table     = (Table)tableIt.next();
                 String tableName = table.getName();
@@ -593,7 +595,7 @@ public class Database implements Serializable
     }
     
     /**
-     * Returns the {@link org.zl.ddlutils.dynabean.SqlDynaClass} for the given table name. If the it does not
+     * Returns the {@link de.elnarion.ddlutils.dynabean.SqlDynaClass} for the given table name. If the it does not
      * exist yet, a new one will be created based on the Table definition.
      * 
      * @param tableName The name of the table to create the bean for
@@ -608,7 +610,7 @@ public class Database implements Serializable
     }
 
     /**
-     * Returns the {@link org.zl.ddlutils.dynabean.SqlDynaClass} for the given dyna bean.
+     * Returns the {@link de.elnarion.ddlutils.dynabean.SqlDynaClass} for the given dyna bean.
      * 
      * @param bean The dyna bean
      * @return The <code>SqlDynaClass</code> for the given bean
@@ -623,6 +625,7 @@ public class Database implements Serializable
      * 
      * @param table The table to create the bean for
      * @return The new dyna bean
+     * @throws SqlDynaException 
      */
     public DynaBean createDynaBeanFor(Table table) throws SqlDynaException
     {
@@ -636,6 +639,7 @@ public class Database implements Serializable
      * @param tableName     The name of the table to create the bean for
      * @param caseSensitive Whether case matters for the names
      * @return The new dyna bean
+     * @throws SqlDynaException 
      */
     public DynaBean createDynaBeanFor(String tableName, boolean caseSensitive) throws SqlDynaException
     {

@@ -49,7 +49,7 @@ public abstract class JdbcSupport
     /** The password for accessing the database. */
     private String _password;
     /** The names of the currently borrowed connections (for debugging). */
-    private HashSet _openConnectionNames = new HashSet();
+    private HashSet<String> _openConnectionNames = new HashSet<>();
 
     // Properties
     //-------------------------------------------------------------------------                
@@ -180,7 +180,7 @@ public abstract class JdbcSupport
                     }
                     else
                     {
-                        for (Iterator it = _openConnectionNames.iterator(); it.hasNext();)
+                        for (Iterator<String> it = _openConnectionNames.iterator(); it.hasNext();)
                         {
                           logMsg.append("\n    ");
                           logMsg.append(it.next().toString());

@@ -62,7 +62,7 @@ public class MSSqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public void createTable(Database database, Table table, Map parameters) throws IOException
+    public void createTable(Database database, Table table, Map<String, String> parameters) throws IOException
     {
         turnOnQuotation();
         super.createTable(database, table, parameters);
@@ -310,7 +310,7 @@ public class MSSqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public String getDeleteSql(Table table, Map pkValues, boolean genPlaceholders)
+    public String getDeleteSql(Table table, Map<String, Object> pkValues, boolean genPlaceholders)
     {
         return getQuotationOnStatement() + super.getDeleteSql(table, pkValues, genPlaceholders);
     }
@@ -318,7 +318,7 @@ public class MSSqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public String getInsertSql(Table table, Map columnValues, boolean genPlaceholders)
+    public String getInsertSql(Table table, Map<String, Object> columnValues, boolean genPlaceholders)
     {
         return getQuotationOnStatement() + super.getInsertSql(table, columnValues, genPlaceholders);
     }
@@ -326,7 +326,7 @@ public class MSSqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public String getUpdateSql(Table table, Map columnValues, boolean genPlaceholders)
+    public String getUpdateSql(Table table, Map<String, Object> columnValues, boolean genPlaceholders)
     {
         return getQuotationOnStatement() + super.getUpdateSql(table, columnValues, genPlaceholders);
     }
@@ -396,6 +396,7 @@ public class MSSqlBuilder extends SqlBuilder
      * 
      * @param table  The table where to drop the column from
      * @param column The column to drop
+     * @throws IOException 
      */
     public void dropColumn(Table table, Column column) throws IOException
     {
@@ -415,6 +416,7 @@ public class MSSqlBuilder extends SqlBuilder
      * Writes the SQL for dropping the primary key of the given table.
      * 
      * @param table The table
+     * @throws IOException 
      */
     public void dropPrimaryKey(Table table) throws IOException
     {
@@ -429,6 +431,7 @@ public class MSSqlBuilder extends SqlBuilder
      * @param table     The table
      * @param curColumn The current column definition
      * @param newColumn The new column definition
+     * @throws IOException 
      */
     public void recreateColumn(Table table, Column curColumn, Column newColumn) throws IOException
     {

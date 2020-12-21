@@ -47,8 +47,8 @@ public class PostgreSqlBuilder extends SqlBuilder
         super(platform);
         // we need to handle the backslash first otherwise the other
         // already escaped sequences would be affected
+        addEscapedCharSequence("'", "''");
         addEscapedCharSequence("\\", "\\\\");
-        addEscapedCharSequence("'",  "\\'");
         addEscapedCharSequence("\b", "\\b");
         addEscapedCharSequence("\f", "\\f");
         addEscapedCharSequence("\n", "\\n");
@@ -87,7 +87,7 @@ public class PostgreSqlBuilder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public void createTable(Database database, Table table, Map parameters) throws IOException
+    public void createTable(Database database, Table table, Map<String, String> parameters) throws IOException
     {
         for (int idx = 0; idx < table.getColumnCount(); idx++)
         {
@@ -185,6 +185,7 @@ public class PostgreSqlBuilder extends SqlBuilder
      * 
      * @param table  The table
      * @param column The column to drop
+     * @throws IOException 
      */
     public void dropColumn(Table table, Column column) throws IOException
     {
@@ -221,4 +222,5 @@ public class PostgreSqlBuilder extends SqlBuilder
             printIdentifier(getColumnName(sourceColumn));
         }
     }
+
 }

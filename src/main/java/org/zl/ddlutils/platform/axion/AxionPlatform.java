@@ -80,7 +80,7 @@ public class AxionPlatform extends PlatformImplBase
     /**
      * {@inheritDoc}
      */
-    public void createDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map parameters) throws DatabaseOperationException, UnsupportedOperationException
+    public void createDatabase(String jdbcDriverClassName, String connectionUrl, String username, String password, Map<String, String> parameters) throws DatabaseOperationException, UnsupportedOperationException
     {
         // Axion will create the database automatically when connecting for the first time
         if (JDBC_DRIVER.equals(jdbcDriverClassName))

@@ -40,9 +40,9 @@ import org.zl.ddlutils.model.Table;
 public class ConverterConfiguration
 {
     /** The converters per type. */
-    private HashMap  _convertersPerType = new HashMap();
+    private HashMap<Integer, SqlTypeConverter>  _convertersPerType = new HashMap<>();
     /** The converters per table-column path. */
-    private HashMap  _convertersPerPath = new HashMap();
+    private HashMap<String, SqlTypeConverter>  _convertersPerPath = new HashMap<>();
 
     /**
      * Creates a new configuration object with the default converters.
@@ -104,11 +104,11 @@ public class ConverterConfiguration
      */
     public SqlTypeConverter getRegisteredConverter(Table table, Column column)
     {
-        SqlTypeConverter result = (SqlTypeConverter)_convertersPerPath.get(table.getName() + "/" + column.getName());
+        SqlTypeConverter result = _convertersPerPath.get(table.getName() + "/" + column.getName());
 
         if (result == null)
         {
-            result = (SqlTypeConverter)_convertersPerType.get(new Integer(column.getTypeCode()));
+            result = _convertersPerType.get(new Integer(column.getTypeCode()));
         }
         return result;
     }

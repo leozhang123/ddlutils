@@ -75,7 +75,7 @@ public class Oracle8Builder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    public void createTable(Database database, Table table, Map parameters) throws IOException
+    public void createTable(Database database, Table table, Map<String, String> parameters) throws IOException
     {
         // lets create any sequences
         Column[] columns = table.getAutoIncrementColumns();
@@ -218,7 +218,7 @@ public class Oracle8Builder extends SqlBuilder
     /**
      * {@inheritDoc}
      */
-    protected void createTemporaryTable(Database database, Table table, Map parameters) throws IOException
+    protected void createTemporaryTable(Database database, Table table, Map<String, String> parameters) throws IOException
     {
         createTable(database, table, parameters);
     }
@@ -372,6 +372,7 @@ public class Oracle8Builder extends SqlBuilder
      * 
      * @param table  The table
      * @param column The column to drop
+     * @throws IOException 
      */
     public void dropColumn(Table table, Column column) throws IOException
     {
@@ -392,6 +393,7 @@ public class Oracle8Builder extends SqlBuilder
      * Writes the SQL to drop the primary key of the given table.
      * 
      * @param table The table
+     * @throws IOException 
      */
     public void dropPrimaryKey(Table table) throws IOException
     {
