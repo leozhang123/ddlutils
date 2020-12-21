@@ -595,7 +595,7 @@ public class Database implements Serializable
     }
     
     /**
-     * Returns the {@link de.elnarion.ddlutils.dynabean.SqlDynaClass} for the given table name. If the it does not
+     * Returns the {@link org.zl.ddlutils.dynabean.SqlDynaClass} for the given table name. If the it does not
      * exist yet, a new one will be created based on the Table definition.
      * 
      * @param tableName The name of the table to create the bean for
@@ -610,7 +610,7 @@ public class Database implements Serializable
     }
 
     /**
-     * Returns the {@link de.elnarion.ddlutils.dynabean.SqlDynaClass} for the given dyna bean.
+     * Returns the {@link org.zl.ddlutils.dynabean.SqlDynaClass} for the given dyna bean.
      * 
      * @param bean The dyna bean
      * @return The <code>SqlDynaClass</code> for the given bean

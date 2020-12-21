@@ -28,7 +28,6 @@ import org.zl.ddlutils.TestAgainstLiveDatabaseBase;
 import org.zl.ddlutils.io.DatabaseIO;
 import org.zl.ddlutils.model.Database;
 import org.zl.ddlutils.platform.firebird.FirebirdPlatform;
-import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mysql.MySql50Platform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
 import org.zl.ddlutils.platform.sybase.SybasePlatform;
@@ -1765,15 +1764,6 @@ public class TestAlteration extends TestAgainstLiveDatabaseBase
 
         List beans = getRows("roundtrip");
 
-        if (MckoiPlatform.DATABASENAME.equals(getPlatform().getName()))
-        {
-            // McKoi can actually handle this, though interestingly it will result in a null value for the pk
-            assertEquals((Object)null,   beans.get(0), "pk");
-            assertEquals((Object)"test", beans.get(0), "avalue");
-        }
-        else
-        {
             assertTrue(beans.isEmpty());
-        }
     }
 }

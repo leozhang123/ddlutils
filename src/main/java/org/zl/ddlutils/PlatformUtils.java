@@ -36,7 +36,6 @@ import org.zl.ddlutils.platform.derby.DerbyPlatform;
 import org.zl.ddlutils.platform.firebird.FirebirdPlatform;
 import org.zl.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.zl.ddlutils.platform.interbase.InterbasePlatform;
-import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
 import org.zl.ddlutils.platform.oracle.Oracle11Platform;
@@ -152,7 +151,6 @@ public class PlatformUtils
         jdbcSubProtocolToPlatform.put(HsqlDbPlatform.JDBC_SUBPROTOCOL,                          HsqlDbPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(InterbasePlatform.JDBC_SUBPROTOCOL,                       InterbasePlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(SapDbPlatform.JDBC_SUBPROTOCOL,                           SapDbPlatform.DATABASENAME);
-        jdbcSubProtocolToPlatform.put(MckoiPlatform.JDBC_SUBPROTOCOL,                           MckoiPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(MSSqlPlatform.JDBC_SUBPROTOCOL,                           MSSqlPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(MSSqlPlatform.JDBC_SUBPROTOCOL_NEW,                       MSSqlPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(MSSqlPlatform.JDBC_SUBPROTOCOL_INTERNAL,                  MSSqlPlatform.DATABASENAME);
@@ -199,7 +197,6 @@ public class PlatformUtils
         jdbcDriverToPlatform.put(HsqlDbPlatform.JDBC_DRIVER,                      HsqlDbPlatform.DATABASENAME);
         jdbcDriverToPlatform.put(InterbasePlatform.JDBC_DRIVER,                   InterbasePlatform.DATABASENAME);
         jdbcDriverToPlatform.put(SapDbPlatform.JDBC_DRIVER,                       SapDbPlatform.DATABASENAME);
-        jdbcDriverToPlatform.put(MckoiPlatform.JDBC_DRIVER,                       MckoiPlatform.DATABASENAME);
         jdbcDriverToPlatform.put(MSSqlPlatform.JDBC_DRIVER,                       MSSqlPlatform.DATABASENAME);
         jdbcDriverToPlatform.put(MSSqlPlatform.JDBC_DRIVER_NEW,                   MSSqlPlatform.DATABASENAME);
         jdbcDriverToPlatform.put(PlatformUtils.JDBC_DRIVER_DATADIRECT_SQLSERVER,  MSSqlPlatform.DATABASENAME);

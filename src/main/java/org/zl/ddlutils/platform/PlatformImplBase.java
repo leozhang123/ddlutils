@@ -92,8 +92,8 @@ import org.zl.ddlutils.util.SqlTokenizer;
  * 
  * @version $Revision: 231110 $
  */
-public abstract class PlatformImplBase extends JdbcSupport implements Platform
-{	/** The default name for models read from the database, if no name as given. */
+public abstract class PlatformImplBase extends JdbcSupport implements Platform {
+	/** The default name for models read from the database, if no name as given. */
 	protected static final String MODEL_DEFAULT_NAME = "default";
 
 	/** The log for this platform. */
@@ -136,8 +136,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Sets the sql builder for this platform.
 	 * 
-	 * @param builder
-	 *            The sql builder
+	 * @param builder The sql builder
 	 */
 	protected void setSqlBuilder(SqlBuilder builder) {
 		_builder = builder;
@@ -156,8 +155,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Sets the model reader for this platform.
 	 * 
-	 * @param modelReader
-	 *            The model reader
+	 * @param modelReader The model reader
 	 */
 	protected void setModelReader(JdbcModelReader modelReader) {
 		_modelReader = modelReader;
@@ -287,8 +285,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Logs any warnings associated to the given connection. Note that the
 	 * connection needs to be open for this.
 	 * 
-	 * @param connection
-	 *            The open connection
+	 * @param connection The open connection
+	 * @throws SQLException
 	 */
 	protected void logWarnings(Connection connection) throws SQLException {
 		SQLWarning warning = connection.getWarnings();
@@ -588,8 +586,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * need to be created before they can be referenced by foreign keys, indexes
 	 * should be dropped before a table is dropped etc.
 	 * 
-	 * @param changes
-	 *            The original changes
+	 * @param changes The original changes
 	 * @return The sorted changes - this can be the original list object or a new
 	 *         one
 	 */
@@ -900,7 +897,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 			throws DatabaseOperationException {
 		String sql = getAlterModelSql(currentModel, desiredModel);
 		_log.debug("sql");
-	
+
 		evaluateBatch(connection, sql, continueOnError);
 	}
 
@@ -1023,14 +1020,11 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * finds the appropriate handler method (one of the <code>processChange</code>
 	 * methods) defined in the concrete sql builder for each change, and invokes it.
 	 * 
-	 * @param model
-	 *            The database model; this object is not going to be changed by this
-	 *            method
-	 * @param changes
-	 *            The changes
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
+	 * @param model   The database model; this object is not going to be changed by
+	 *                this method
+	 * @param changes The changes
+	 * @param params  The parameters used in the creation of new tables. Note that
+	 *                for existing tables, the parameters won't be applied
 	 * @return The changed database model
 	 */
 	protected Database processChanges(Database model, Collection<ModelChange> changes, CreationParameters params)
@@ -1047,13 +1041,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Invokes the change handler (one of the <code>processChange</code> methods)
 	 * for the given change object.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 */
 	private void invokeChangeHandler(Database currentModel, CreationParameters params, ModelChange change)
 			throws IOException {
@@ -1093,13 +1084,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Finds the table changed by the change object in the given model.
 	 * 
-	 * @param currentModel
-	 *            The model to find the table in
-	 * @param change
-	 *            The table change
+	 * @param currentModel The model to find the table in
+	 * @param change       The table change
 	 * @return The table
-	 * @throws ModelException
-	 *             If the table could not be found
+	 * @throws ModelException If the table could not be found
 	 */
 	protected Table findChangedTable(Database currentModel, TableChange change) throws ModelException {
 		Table table = currentModel.findTable(change.getChangedTable(),
@@ -1115,13 +1103,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Finds the index changed by the change object in the given model.
 	 * 
-	 * @param currentModel
-	 *            The model to find the index in
-	 * @param change
-	 *            The index change
+	 * @param currentModel The model to find the index in
+	 * @param change       The index change
 	 * @return The index
-	 * @throws ModelException
-	 *             If the index could not be found
+	 * @throws ModelException If the index could not be found
 	 */
 	protected Index findChangedIndex(Database currentModel, IndexChange change) throws ModelException {
 		Index index = change.findChangedIndex(currentModel, getPlatformInfo().isDelimitedIdentifiersSupported());
@@ -1137,13 +1122,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Finds the foreign key changed by the change object in the given model.
 	 * 
-	 * @param currentModel
-	 *            The model to find the foreign key in
-	 * @param change
-	 *            The foreign key change
+	 * @param currentModel The model to find the foreign key in
+	 * @param change       The foreign key change
 	 * @return The foreign key
-	 * @throws ModelException
-	 *             If the foreign key could not be found
+	 * @throws ModelException If the foreign key could not be found
 	 */
 	protected ForeignKey findChangedForeignKey(Database currentModel, ForeignKeyChange change) throws ModelException {
 		ForeignKey fk = change.findChangedForeignKey(currentModel, getPlatformInfo().isDelimitedIdentifiersSupported());
@@ -1159,13 +1141,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the addition of a table.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, AddTableChange change)
@@ -1178,13 +1157,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the removal of a table.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 * @throws ModelException
 	 */
@@ -1199,13 +1175,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the addition of a foreign key.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, AddForeignKeyChange change)
@@ -1219,13 +1192,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the removal of a foreign key.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 * @throws ModelException
 	 */
@@ -1241,13 +1211,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the addition of an index.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, AddIndexChange change)
@@ -1261,13 +1228,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the removal of an index.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 * @throws ModelException
 	 */
@@ -1283,13 +1247,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the addition of a column.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, AddColumnChange change)
@@ -1303,13 +1264,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the addition of a primary key.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, AddPrimaryKeyChange change)
@@ -1328,13 +1286,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Processes a change representing the recreation of a table.
 	 * 
-	 * @param currentModel
-	 *            The current database schema
-	 * @param params
-	 *            The parameters used in the creation of new tables. Note that for
-	 *            existing tables, the parameters won't be applied
-	 * @param change
-	 *            The change object
+	 * @param currentModel The current database schema
+	 * @param params       The parameters used in the creation of new tables. Note
+	 *                     that for existing tables, the parameters won't be applied
+	 * @param change       The change object
 	 * @throws IOException
 	 */
 	public void processChange(Database currentModel, CreationParameters params, RecreateTableChange change)
@@ -1390,8 +1345,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * simply appends an underscore to the table name and uses that as the table
 	 * name.
 	 * 
-	 * @param targetTable
-	 *            The target table
+	 * @param targetTable The target table
 	 * @return The temporary table
 	 */
 	protected Table getTemporaryTableFor(Table targetTable) {
@@ -1420,7 +1374,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * {@inheritDoc}
 	 */
-	public Iterator<DynaBean> query(Database model, String sql, Collection<Object> parameters) throws DatabaseOperationException {
+	public Iterator<DynaBean> query(Database model, String sql, Collection<Object> parameters)
+			throws DatabaseOperationException {
 		return query(model, sql, parameters, null);
 	}
 
@@ -1549,7 +1504,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<DynaBean> fetch(Database model, String sql, Collection<Object> parameters) throws DatabaseOperationException {
+	public List<DynaBean> fetch(Database model, String sql, Collection<Object> parameters)
+			throws DatabaseOperationException {
 		return fetch(model, sql, parameters, null, 0, -1);
 	}
 
@@ -1572,8 +1528,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<DynaBean> fetch(Database model, String sql, Collection<Object> parameters, Table[] queryHints, int start, int end)
-			throws DatabaseOperationException {
+	public List<DynaBean> fetch(Database model, String sql, Collection<Object> parameters, Table[] queryHints,
+			int start, int end) throws DatabaseOperationException {
 		Connection connection = borrowConnection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -1621,14 +1577,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * is given, then a concrete insert statement is created, otherwise an insert
 	 * statement usable in a prepared statement is build.
 	 *
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The type
-	 * @param properties
-	 *            The properties to write
-	 * @param bean
-	 *            Optionally the concrete bean to insert
+	 * @param model      The database model
+	 * @param dynaClass  The type
+	 * @param properties The properties to write
+	 * @param bean       Optionally the concrete bean to insert
 	 * @return The SQL required to insert an instance of the class
 	 */
 	protected String createInsertSql(Database model, SqlDynaClass dynaClass, SqlDynaProperty[] properties,
@@ -1643,10 +1595,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Creates the SQL for querying for the id generated by the last insert of an
 	 * object of the given type.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The type
+	 * @param model     The database model
+	 * @param dynaClass The type
 	 * @return The SQL required for querying for the id, or <code>null</code> if the
 	 *         database does not support this
 	 */
@@ -1676,12 +1626,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * which the bean either has a value or the column hasn't got a default value,
 	 * for the given dyna class.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The dyna class
-	 * @param bean
-	 *            The bean
+	 * @param model     The database model
+	 * @param dynaClass The dyna class
+	 * @param bean      The bean
 	 * @return The properties
 	 */
 	private SqlDynaProperty[] getPropertiesForInsertion(Database model, SqlDynaClass dynaClass, final DynaBean bean) {
@@ -1715,12 +1662,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Returns all identity properties whose value were defined by the database and
 	 * which now need to be read back from the DB.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The dyna class
-	 * @param bean
-	 *            The bean
+	 * @param model     The database model
+	 * @param dynaClass The dyna class
+	 * @param bean      The bean
 	 * @return The columns
 	 */
 	private Column[] getRelevantIdentityColumns(Database model, SqlDynaClass dynaClass, final DynaBean bean) {
@@ -1949,12 +1893,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Performs the batch for the given statement, and checks that the specified
 	 * amount of rows have been changed.
 	 * 
-	 * @param statement
-	 *            The prepared statement
-	 * @param numRows
-	 *            The number of rows that should change
-	 * @param table
-	 *            The changed table
+	 * @param statement The prepared statement
+	 * @param numRows   The number of rows that should change
+	 * @param table     The changed table
 	 */
 	private void executeBatch(PreparedStatement statement, int numRows, Table table) throws DatabaseOperationException {
 		if (statement != null) {
@@ -2018,10 +1959,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Allows platforms to issue statements directly before rows are inserted into
 	 * the specified table.
 	 * 
-	 * @param connection
-	 *            The connection used for the insertion
-	 * @param table
-	 *            The table that the rows are inserted into
+	 * @param connection The connection used for the insertion
+	 * @param table      The table that the rows are inserted into
 	 */
 	protected void beforeInsert(Connection connection, Table table) throws SQLException {
 	}
@@ -2030,10 +1969,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Allows platforms to issue statements directly after rows have been inserted
 	 * into the specified table.
 	 * 
-	 * @param connection
-	 *            The connection used for the insertion
-	 * @param table
-	 *            The table that the rows have been inserted into
+	 * @param connection The connection used for the insertion
+	 * @param table      The table that the rows have been inserted into
 	 */
 	protected void afterInsert(Connection connection, Table table) throws SQLException {
 	}
@@ -2043,16 +1980,11 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * is given, then a concrete update statement is created, otherwise an update
 	 * statement usable in a prepared statement is build.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The type
-	 * @param primaryKeys
-	 *            The primary keys
-	 * @param properties
-	 *            The properties to write
-	 * @param bean
-	 *            Optionally the concrete bean to update
+	 * @param model       The database model
+	 * @param dynaClass   The type
+	 * @param primaryKeys The primary keys
+	 * @param properties  The properties to write
+	 * @param bean        Optionally the concrete bean to update
 	 * @return The SQL required to update the instance
 	 */
 	protected String createUpdateSql(Database model, SqlDynaClass dynaClass, SqlDynaProperty[] primaryKeys,
@@ -2070,19 +2002,13 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * is given, then a concrete update statement is created, otherwise an update
 	 * statement usable in a prepared statement is build.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The type
-	 * @param primaryKeys
-	 *            The primary keys
-	 * @param properties
-	 *            The properties to write
-	 * @param oldBean
-	 *            Contains column values to identify the rows to update (i.e. for
-	 *            the WHERE clause)
-	 * @param newBean
-	 *            Contains the new column values to write
+	 * @param model       The database model
+	 * @param dynaClass   The type
+	 * @param primaryKeys The primary keys
+	 * @param properties  The properties to write
+	 * @param oldBean     Contains column values to identify the rows to update
+	 *                    (i.e. for the WHERE clause)
+	 * @param newBean     Contains the new column values to write
 	 * @return The SQL required to update the instance
 	 */
 	protected String createUpdateSql(Database model, SqlDynaClass dynaClass, SqlDynaProperty[] primaryKeys,
@@ -2261,10 +2187,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Allows platforms to issue statements directly before rows are updated in the
 	 * specified table.
 	 * 
-	 * @param connection
-	 *            The connection used for the update
-	 * @param table
-	 *            The table that the rows are updateed into
+	 * @param connection The connection used for the update
+	 * @param table      The table that the rows are updateed into
 	 */
 	protected void beforeUpdate(Connection connection, Table table) throws SQLException {
 	}
@@ -2273,10 +2197,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Allows platforms to issue statements directly after rows have been updated in
 	 * the specified table.
 	 * 
-	 * @param connection
-	 *            The connection used for the update
-	 * @param table
-	 *            The table that the rows have been updateed into
+	 * @param connection The connection used for the update
+	 * @param table      The table that the rows have been updateed into
 	 */
 	protected void afterUpdate(Connection connection, Table table) throws SQLException {
 	}
@@ -2369,14 +2291,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * is given, then a concrete delete statement is created, otherwise a delete
 	 * statement usable in a prepared statement is build.
 	 * 
-	 * @param model
-	 *            The database model
-	 * @param dynaClass
-	 *            The type
-	 * @param primaryKeys
-	 *            The primary keys
-	 * @param bean
-	 *            Optionally the concrete bean to update
+	 * @param model       The database model
+	 * @param dynaClass   The type
+	 * @param primaryKeys The primary keys
+	 * @param bean        Optionally the concrete bean to update
 	 * @return The SQL required to delete the instance
 	 */
 	protected String createDeleteSql(Database model, SqlDynaClass dynaClass, SqlDynaProperty[] primaryKeys,
@@ -2518,8 +2436,7 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Allows the platform to postprocess the model just read from the database.
 	 * 
-	 * @param model
-	 *            The model
+	 * @param model The model
 	 */
 	protected void postprocessModelFromDatabase(Database model) {
 		// Default values for CHAR/VARCHAR/LONGVARCHAR columns have quotation marks
@@ -2546,10 +2463,8 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Derives the column values for the given dyna properties from the dyna bean.
 	 * 
-	 * @param properties
-	 *            The properties
-	 * @param bean
-	 *            The bean
+	 * @param properties The properties
+	 * @param bean       The bean
 	 * @return The values indexed by the column names
 	 */
 	protected HashMap<String, Object> toColumnValues(SqlDynaProperty[] properties, DynaBean bean) {
@@ -2565,15 +2480,11 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Sets a parameter of the prepared statement based on the type of the column of
 	 * the property.
 	 * 
-	 * @param statement
-	 *            The statement
-	 * @param sqlIndex
-	 *            The index of the parameter to set in the statement
-	 * @param dynaBean
-	 *            The bean of which to take the value
-	 * @param property
-	 *            The property of the bean, which also defines the corresponding
-	 *            column
+	 * @param statement The statement
+	 * @param sqlIndex  The index of the parameter to set in the statement
+	 * @param dynaBean  The bean of which to take the value
+	 * @param property  The property of the bean, which also defines the
+	 *                  corresponding column
 	 */
 	protected void setObject(PreparedStatement statement, int sqlIndex, DynaBean dynaBean, SqlDynaProperty property)
 			throws SQLException {
@@ -2589,16 +2500,11 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * method on the statement, and to give database-specific implementations the
 	 * ability to change this behavior.
 	 * 
-	 * @param statement
-	 *            The statement
-	 * @param sqlIndex
-	 *            The parameter index
-	 * @param typeCode
-	 *            The JDBC type code
-	 * @param value
-	 *            The value
-	 * @throws SQLException
-	 *             If an error occurred while setting the parameter value
+	 * @param statement The statement
+	 * @param sqlIndex  The parameter index
+	 * @param typeCode  The JDBC type code
+	 * @param value     The value
+	 * @throws SQLException If an error occurred while setting the parameter value
 	 */
 	protected void setStatementParameterValue(PreparedStatement statement, int sqlIndex, int typeCode, Object value)
 			throws SQLException {
@@ -2640,12 +2546,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * {@link ModelBasedResultSetIterator} class so that concrete platforms can
 	 * modify its behavior.
 	 * 
-	 * @param resultSet
-	 *            The result set
-	 * @param columnName
-	 *            The name of the column
-	 * @param table
-	 *            The table
+	 * @param resultSet  The result set
+	 * @param columnName The name of the column
+	 * @param table      The table
 	 * @return The value
 	 */
 	protected Object getObjectFromResultSet(ResultSet resultSet, String columnName, Table table) throws SQLException {
@@ -2678,12 +2581,9 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * Helper method for retrieving the value for a column from the given result set
 	 * using the type code of the column.
 	 * 
-	 * @param resultSet
-	 *            The result set
-	 * @param column
-	 *            The column
-	 * @param idx
-	 *            The value's index in the result set (starting from 1)
+	 * @param resultSet The result set
+	 * @param column    The column
+	 * @param idx       The value's index in the result set (starting from 1)
 	 * @return The value
 	 */
 	protected Object getObjectFromResultSet(ResultSet resultSet, Column column, int idx) throws SQLException {
@@ -2712,19 +2612,14 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	 * to provide an extension point where database-specific implementations can
 	 * change this behavior.
 	 * 
-	 * @param resultSet
-	 *            The result set to extract the value from
-	 * @param columnName
-	 *            The name of the column; can be <code>null</code> in which case the
-	 *            <code>columnIdx</code> will be used instead
-	 * @param columnIdx
-	 *            The index of the column's value in the result set; is only used if
-	 *            <code>columnName</code> is <code>null</code>
-	 * @param jdbcType
-	 *            The jdbc type to extract
+	 * @param resultSet  The result set to extract the value from
+	 * @param columnName The name of the column; can be <code>null</code> in which
+	 *                   case the <code>columnIdx</code> will be used instead
+	 * @param columnIdx  The index of the column's value in the result set; is only
+	 *                   used if <code>columnName</code> is <code>null</code>
+	 * @param jdbcType   The jdbc type to extract
 	 * @return The value
-	 * @throws SQLException
-	 *             If an error occurred while accessing the result set
+	 * @throws SQLException If an error occurred while accessing the result set
 	 */
 	protected Object extractColumnValue(ResultSet resultSet, String columnName, int columnIdx, int jdbcType)
 			throws SQLException {
@@ -2830,13 +2725,10 @@ public abstract class PlatformImplBase extends JdbcSupport implements Platform
 	/**
 	 * Creates an iterator over the given result set.
 	 *
-	 * @param model
-	 *            The database model
-	 * @param resultSet
-	 *            The result set to iterate over
-	 * @param queryHints
-	 *            The tables that were queried in the query that produced the given
-	 *            result set (optional)
+	 * @param model      The database model
+	 * @param resultSet  The result set to iterate over
+	 * @param queryHints The tables that were queried in the query that produced the
+	 *                   given result set (optional)
 	 * @return The iterator
 	 */
 	protected ModelBasedResultSetIterator createResultSetIterator(Database model, ResultSet resultSet,

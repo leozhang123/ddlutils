@@ -73,6 +73,7 @@ public class HsqlDbBuilder extends SqlBuilder
      * @param newColumn  The new column
      * @param nextColumn The column before which the new column shall be added; <code>null</code>
      *                   if the new column is to be added instead of inserted
+     * @throws IOException
      */
     public void insertColumn(Table table, Column newColumn, Column nextColumn) throws IOException
     {

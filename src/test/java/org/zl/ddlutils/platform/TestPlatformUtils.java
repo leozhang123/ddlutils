@@ -8,7 +8,6 @@ import org.zl.ddlutils.platform.derby.DerbyPlatform;
 import org.zl.ddlutils.platform.firebird.FirebirdPlatform;
 import org.zl.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.zl.ddlutils.platform.interbase.InterbasePlatform;
-import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
 import org.zl.ddlutils.platform.oracle.Oracle11Platform;
@@ -211,26 +210,6 @@ public class TestPlatformUtils extends TestCase
     {
         assertEquals(InterbasePlatform.DATABASENAME,
                      _platformUtils.determineDatabaseType(null, "jdbc:interbase://localhost/e:/testbed/database/employee.gdb"));
-    }
-
-    /**
-     * Tests the determination of the McKoi platform via its JDBC driver.
-     */
-    public void testMckoiDriver()
-    {
-        assertEquals(MckoiPlatform.DATABASENAME,
-                     _platformUtils.determineDatabaseType("com.mckoi.JDBCDriver", null));
-    }
-
-    /**
-     * Tests the determination of the McKoi platform via JDBC connection urls.
-     */
-    public void testMckoiUrl()
-    {
-        assertEquals(MckoiPlatform.DATABASENAME,
-                     _platformUtils.determineDatabaseType(null, "jdbc:mckoi:local://./db.conf"));
-        assertEquals(MckoiPlatform.DATABASENAME,
-                     _platformUtils.determineDatabaseType(null, "jdbc:mckoi://db.myhost.org/"));
     }
 
     /**

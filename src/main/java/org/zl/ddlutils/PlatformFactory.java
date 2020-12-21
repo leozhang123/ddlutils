@@ -32,7 +32,6 @@ import org.zl.ddlutils.platform.firebird.FirebirdPlatform;
 import org.zl.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.zl.ddlutils.platform.interbase.InterbasePlatform;
 import org.zl.ddlutils.platform.maxdb.MaxDbPlatform;
-import org.zl.ddlutils.platform.mckoi.MckoiPlatform;
 import org.zl.ddlutils.platform.mssql.MSSqlPlatform;
 import org.zl.ddlutils.platform.mysql.MySql50Platform;
 import org.zl.ddlutils.platform.mysql.MySqlPlatform;
@@ -193,7 +192,6 @@ public class PlatformFactory
         addPlatform(_platforms, HsqlDbPlatform.DATABASENAME,      HsqlDbPlatform.class);
         addPlatform(_platforms, InterbasePlatform.DATABASENAME,   InterbasePlatform.class);
         addPlatform(_platforms, MaxDbPlatform.DATABASENAME,       MaxDbPlatform.class);
-        addPlatform(_platforms, MckoiPlatform.DATABASENAME,       MckoiPlatform.class);
         addPlatform(_platforms, MSSqlPlatform.DATABASENAME,       MSSqlPlatform.class);
         addPlatform(_platforms, MySqlPlatform.DATABASENAME,       MySqlPlatform.class);
         addPlatform(_platforms, MySql50Platform.DATABASENAME,     MySql50Platform.class);
