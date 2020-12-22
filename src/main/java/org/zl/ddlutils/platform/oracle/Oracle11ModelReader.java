@@ -71,6 +71,10 @@ public class Oracle11ModelReader extends Oracle10ModelReader {
 				column.setSize(null);
 			}
 			
+		}else if (column.getTypeCode() == Types.DECIMAL) {
+			if(column.getSizeAsInt()==0) {
+				column.setSize(null);
+			}
 		}
 		return column;
 	}

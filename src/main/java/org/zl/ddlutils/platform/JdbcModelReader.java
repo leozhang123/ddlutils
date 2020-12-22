@@ -942,7 +942,7 @@ public class JdbcModelReader
 
         try
         {
-            pkData = metaData.getPrimaryKeys(metaData.escapeForSearch(tableName));
+            pkData = metaData.getPrimaryKeys(tableName);
             while (pkData.next())
             {
                 Map<String, Object> values = readColumns(pkData, getColumnsForPK());
@@ -993,7 +993,7 @@ public class JdbcModelReader
 
         try
         {
-            fkData = metaData.getForeignKeys(metaData.escapeForSearch(tableName));
+            fkData = metaData.getForeignKeys(tableName);
 
             while (fkData.next())
             {

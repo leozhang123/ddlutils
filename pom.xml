@@ -17,7 +17,7 @@
 	<groupId>com.github.leozhang123</groupId>
 	<artifactId>ddlutils</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>DdlUtils </name>
 	<inceptionYear>2020</inceptionYear>
 	<description>Fork of Apache DdlUtils project without ant support.</description>

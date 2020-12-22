@@ -40,4 +40,9 @@ public class Oracle11Platform extends Oracle9Platform {
         setModelReader(new Oracle11ModelReader(this));
     }
     
+	@Override
+	public String getName() {
+		return DATABASENAME;
+	}
+    
 }
