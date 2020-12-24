@@ -1110,7 +1110,7 @@ public class JdbcModelReader
 
         try 
         {
-            indexData = metaData.getIndices(metaData.escapeForSearch(tableName), false, false);
+            indexData = metaData.getIndices(tableName, false, false);
 
             while (indexData.next())
             {
